@@ -2,6 +2,7 @@
 
 namespace Crater\Http\Controllers\V1\Admin\Customer;
 
+use Crater\Exports\CustomerTemplate;
 use Crater\Http\Controllers\Controller;
 use Crater\Http\Requests;
 use Crater\Http\Requests\DeleteCustomersRequest;
@@ -9,6 +10,7 @@ use Crater\Http\Resources\CustomerResource;
 use Crater\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomersController extends Controller
 {
@@ -104,5 +106,22 @@ class CustomersController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function downloadTemplate()
+    {
+        try {
+            // Create a new instance of the CustomerTemplate class
+            $customerTemplate = new CustomerTemplate();
+
+            // Generate the Excel file with the template data
+            $file = Excel::download($customerTemplate, 'customer_template.xlsx');
+
+            // Return the file as a response
+            return $file;
+        } catch (\Exception $e) {
+            // Handle any errors
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

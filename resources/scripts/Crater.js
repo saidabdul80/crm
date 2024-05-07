@@ -60,3 +60,6 @@ export default class Crater {
     app.mount('body')
   }
 }
+
+
+window.Crater = new Crater()

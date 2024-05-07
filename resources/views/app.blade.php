@@ -19,7 +19,6 @@
     <!-- Module Styles -->
 
     <!-- Scripts -->
-
     @foreach(\Crater\Services\Module\ModuleFacade::allStyles() as $name => $path)
         <link rel="stylesheet" href="/modules/styles/{{ $name }}">
     @endforeach

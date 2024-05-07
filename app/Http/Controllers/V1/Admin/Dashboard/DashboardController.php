@@ -84,7 +84,7 @@ class DashboardController extends Controller
                     [$start->format('Y-m-d'), $end->format('Y-m-d')]
                 )
                 ->whereCompany()
-                ->sum('base_amount')
+                ->sum('amount')
             );
             array_push(
                 $net_income_totals,
@@ -105,14 +105,14 @@ class DashboardController extends Controller
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
         )
             ->whereCompany()
-            ->sum('base_total');
+            ->sum('total');
 
         $total_receipts = Payment::whereBetween(
             'payment_date',
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
         )
             ->whereCompany()
-            ->sum('base_amount');
+            ->sum('amount');
 
         $total_expenses = Expense::whereBetween(
             'expense_date',
@@ -136,11 +136,11 @@ class DashboardController extends Controller
             ->count();
         $total_estimate_count = Estimate::whereCompany()->count();
         $total_amount_due = Invoice::whereCompany()
-            ->sum('base_due_amount');
+            ->sum('total');
 
         $recent_due_invoices = Invoice::with('customer')
             ->whereCompany()
-            ->where('base_due_amount', '>', 0)
+            ->where('total', '>', 0)
             ->take(5)
             ->latest()
             ->get();

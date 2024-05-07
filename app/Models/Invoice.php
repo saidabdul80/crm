@@ -328,7 +328,8 @@ class Invoice extends Model implements HasMedia
         }
 
         $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
-
+        $accountCurrency->balance -= $data['total'];
+        $accountCurrency->save();
         $invoice = Invoice::create($data);
 
         $serial = (new SerialNumberFormatter())
@@ -378,10 +379,16 @@ class Invoice extends Model implements HasMedia
             ->setModelObject($this->id)
             ->setNextNumbers();
 
-        $data = $request->getInvoicePayload();
-        $oldTotal = $this->total;
+            $oldTotal = $this->total;
+            $data = $request->getInvoicePayload();
 
-        $total_paid_amount = $this->total - $this->due_amount;
+            $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
+
+            // Calculate the new balance
+            $newBalance = $accountCurrency->balance + $data['total'] - $oldTotal;
+            $accountCurrency->update(['balance' => $newBalance]);
+
+            $total_paid_amount = $this->total - $this->due_amount;
 
         if ($total_paid_amount > 0 && $this->customer_id !== $request->customer_id) {
             return 'customer_cannot_be_changed_after_payment_is_added';

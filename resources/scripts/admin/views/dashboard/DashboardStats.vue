@@ -1,6 +1,8 @@
 <template>
+
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-9 xl:gap-8">
     <!-- Amount Due -->
+
     <DashboardStatsItem
       v-if="userStore.hasAbilities(abilities.VIEW_INVOICE)"
       :icon-component="DollarIcon"

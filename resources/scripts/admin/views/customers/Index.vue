@@ -31,6 +31,24 @@
 
           <BaseButton
             v-if="userStore.hasAbilities(abilities.CREATE_CUSTOMER)"
+            @click="exportNow()"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="PlusIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('export') }}
+          </BaseButton>
+          <BaseButton
+            v-if="userStore.hasAbilities(abilities.CREATE_CUSTOMER)"
+            @click="importModal()"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="PlusIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('import') }}
+          </BaseButton>
+          <BaseButton
+            v-if="userStore.hasAbilities(abilities.CREATE_CUSTOMER)"
             @click="$router.push('customers/create')"
           >
             <template #left="slotProps">
@@ -192,6 +210,7 @@
       </BaseTable>
     </div>
   </BasePage>
+  <ImportCustomerModal />
 </template>
 
 <script setup>
@@ -204,15 +223,18 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useUserStore } from '@/scripts/admin/stores/user'
 
+import { useModalStore } from '@/scripts/stores/modal'
 import abilities from '@/scripts/admin/stub/abilities'
+import ImportCustomerModal from '@/scripts/admin/components/modal-components/ImportCustomerModal.vue'
 
 import CustomerDropdown from '@/scripts/admin/components/dropdowns/CustomerIndexDropdown.vue'
 import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
-
 const companyStore = useCompanyStore()
 const dialogStore = useDialogStore()
 const customerStore = useCustomerStore()
 const userStore = useUserStore()
+
+const modalStore = useModalStore()
 
 let tableComponent = ref(null)
 let showFilters = ref(false)
@@ -364,5 +386,17 @@ function removeMultipleCustomers() {
         })
       }
     })
+}
+
+async function importModal() {
+  /* await customFieldStore.fetchCustomField(id) */
+  modalStore.openModal({
+    title: t('import'),
+    active:true,
+    componentName: 'ImportCustomerModal',
+    size: 'sm',
+    data: '',
+    refreshData: {},
+  })
 }
 </script>

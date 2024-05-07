@@ -92,6 +92,40 @@ export const useCustomerStore = (useWindow = false) => {
         })
       },
 
+      downloadTemplate(params) {
+        alert()
+        return new Promise((resolve, reject) => {
+          axios
+            .get('/api/v1/customers/download_template', {
+              params: params,
+              responseType: 'blob' // Set the response type to 'blob' to handle binary data
+            })
+            .then(response => {
+              // Create a Blob object from the response data
+              const blob = new Blob([response.data], {
+                type: response.headers['content-type']
+              });
+
+              // Create a temporary URL for the Blob
+              const url = window.URL.createObjectURL(blob);
+
+              // Create a link element and set its properties
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'customer_template.xlsx'; // Set the default filename for the download
+              link.click();
+
+              // Clean up: release the URL and resolve the promise
+              window.URL.revokeObjectURL(url);
+              resolve();
+            })
+            .catch(err => {
+              // Handle errors
+              handleError(err);
+              reject(err);
+            });
+        });
+      },
       fetchViewCustomer(params) {
         return new Promise((resolve, reject) => {
           this.isFetchingViewData = true

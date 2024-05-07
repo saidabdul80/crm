@@ -170,6 +170,7 @@ return [
         Crater\Providers\DropboxServiceProvider::class,
         Crater\Providers\ViewServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -221,6 +222,7 @@ return [
         'Flash' => Laracasts\Flash\Flash::class,
         // 'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'Pusher' => Pusher\Pusher::class,
-        'Menu' => Lavary\Menu\Facade::class
+        'Menu' => Lavary\Menu\Facade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 ];

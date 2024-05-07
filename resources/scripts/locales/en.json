@@ -169,6 +169,8 @@
     "previous_year": "Previous Year",
     "custom": "Custom"
   },
+  "export": "Export",
+  "import": "Import",
   "customers": {
     "title": "Customers",
     "prefix": "Prefix",

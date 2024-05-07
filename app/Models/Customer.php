@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Maatwebsite\Excel\Facades\Excel;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -200,6 +201,47 @@ class Customer extends Authenticatable implements HasMedia
         $customer = Customer::with('billingAddress', 'shippingAddress', 'fields')->find($customer->id);
 
         return $customer;
+    }
+
+
+    public static function uploadCustomers($request)
+    {
+        try {
+            $uploadedFile = $request->file('file');
+
+            // Validate the uploaded file (e.g., file type, size)
+
+            // Read the Excel file and get the data
+            $data = Excel::toCollection([], $uploadedFile)[0];
+
+            foreach ($data as $row) {
+                // Create a new customer instance
+                $customer = new Customer();
+
+                // Assign values to required attributes
+                $customer->name = $row['name'];
+                $customer->email = $row['email'];
+                $customer->phone = $row['phone'];
+
+                // Save the customer
+                $customer->save();
+
+                // Handle custom fields
+                // You need to adjust this part based on how your custom fields are structured in the Excel file
+                foreach ($row as $key => $value) {
+                    // Check if the key corresponds to a custom field
+                    $customField = CustomField::where('slug', $key)->first();
+                    if ($customField) {
+                        // Save the custom field value
+                        $customer->customFields()->attach($customField->id, ['value' => $value]);
+                    }
+                }
+            }
+
+            return response()->json(['message' => 'Customers uploaded successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public static function updateCustomer($request, $customer)

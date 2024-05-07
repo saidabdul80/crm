@@ -249,6 +249,7 @@ Route::prefix('/v1')->group(function () {
             //----------------------------------
 
             Route::post('/customers/delete', [CustomersController::class, 'delete']);
+            Route::get('/customers/download_template', [CustomersController::class, 'downloadTemplate']);
 
             Route::get('customers/{customer}/stats', CustomerStatsController::class);
 
