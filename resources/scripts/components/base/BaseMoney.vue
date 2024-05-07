@@ -88,6 +88,6 @@ const invalidClass = computed(() => {
   if (props.invalid) {
     return 'border-red-500 ring-red-500 focus:ring-red-500 focus:border-red-500'
   }
-  return 'focus:ring-primary-400 focus:border-primary-400'
+  return ' focus:border-gray-400'
 })
 </script>

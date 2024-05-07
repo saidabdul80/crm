@@ -25,7 +25,7 @@ const companyStore = useCompanyStore()
 
 const formattedAmount = computed(() => {
   return utils.formatMoney(
-    props.amount,
+    props.amount*100,
     props.currency || companyStore.selectedCompanyCurrency
   )
 })

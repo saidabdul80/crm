@@ -34,8 +34,7 @@
           cursor-default
           focus:outline-none
           focus:ring-1
-          focus:ring-primary-500
-          focus:border-primary-500
+          focus:border-gray-500
           sm:text-sm
         "
       >
@@ -100,7 +99,7 @@
           >
             <li
               :class="[
-                active ? 'text-white bg-primary-600' : 'text-gray-900',
+                active ? 'text-white bg-gray-600' : 'text-gray-900',
                 'cursor-default select-none relative py-2 pl-3 pr-9',
               ]"
             >

@@ -18,12 +18,12 @@ class CustomerPortalMiddleware
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::guard('customer')->user();
-
+/*
         if (! $user->enable_portal) {
             Auth::guard('customer')->logout();
 
             return response('Unauthorized.', 401);
-        }
+        } */
 
         return $next($request);
     }

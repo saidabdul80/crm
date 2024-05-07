@@ -8,6 +8,11 @@ export const useCompanyStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
+  axios.interceptors.request.use((config) => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+    return config;
+  });
+
   return defineStoreFunc({
     id: 'company',
 
@@ -26,9 +31,11 @@ export const useCompanyStore = (useWindow = false) => {
 
       fetchBasicMailConfig() {
         return new Promise((resolve, reject) => {
-          axios
-            .get('/api/v1/company/mail/config')
-            .then((response) => {
+          axios.get('/api/v1/company/mail/config', {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          }).then((response) => {
               resolve(response)
             })
             .catch((err) => {
@@ -66,6 +73,25 @@ export const useCompanyStore = (useWindow = false) => {
           axios
             .post('/api/v1/company/upload-logo', data)
             .then((response) => {
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      updateCompanyAccount(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post('/api/v1/account/save', data)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              notificationStore.showNotification({
+                type: 'success',
+                message: global.t('Fund Updated'),
+              })
               resolve(response)
             })
             .catch((err) => {

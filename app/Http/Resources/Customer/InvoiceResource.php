@@ -21,6 +21,7 @@ class InvoiceResource extends JsonResource
             'invoice_number' => $this->invoice_number,
             'reference_number' => $this->reference_number,
             'status' => $this->status,
+            'paying_currency_id'=>$this->paying_currency_id,
             'paid_status' => $this->paid_status,
             'tax_per_item' => $this->tax_per_item,
             'discount_per_item' => $this->discount_per_item,

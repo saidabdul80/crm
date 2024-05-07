@@ -51,6 +51,8 @@ const MailConfig = () =>
   import('@/scripts/admin/views/settings/MailConfigSetting.vue')
 const FileDisk = () =>
   import('@/scripts/admin/views/settings/FileDiskSetting.vue')
+const Others = () =>
+  import('@/scripts/admin/views/settings/OthersSetting.vue')
 const Backup = () => import('@/scripts/admin/views/settings/BackupSetting.vue')
 const UpdateApp = () =>
   import('@/scripts/admin/views/settings/UpdateAppSetting.vue')
@@ -314,6 +316,12 @@ export default [
             name: 'file-disk',
             meta: { isOwner: true },
             component: FileDisk,
+          },
+          {
+            path: 'others',
+            name: 'others',
+            meta: { isOwner: true },
+            component: Others,
           },
           {
             path: 'backup',

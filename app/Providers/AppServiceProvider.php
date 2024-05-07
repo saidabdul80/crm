@@ -2,12 +2,14 @@
 
 namespace Crater\Providers;
 
+use Crater\Traits\GeneratesMenuTrait;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    use GeneratesMenuTrait;
     /**
      * Bootstrap any application services.
      *
@@ -18,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapThree();
         $this->loadJsonTranslationsFrom(resource_path('scripts/locales'));
 
+        $this->addMenus();
         if (\Storage::disk('local')->has('database_created') && Schema::hasTable('abilities')) {
-            $this->addMenus();
         }
     }
 
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
     public function addMenus()
     {
         //main menu
+
         \Menu::make('main_menu', function ($menu) {
             foreach (config('crater.main_menu') as $data) {
                 $this->generateMenu($menu, $data);

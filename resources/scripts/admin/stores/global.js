@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useCompanyStore } from './company'
 import { useUserStore } from './user'
@@ -6,11 +5,14 @@ import { useModuleStore } from './module'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
 import _ from 'lodash'
-
+import axios from 'axios'
 export const useGlobalStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
-
+  axios.interceptors.request.use((config) => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+    return config;
+  });
   return defineStoreFunc({
     id: 'global',
     state: () => ({
@@ -25,7 +27,7 @@ export const useGlobalStore = (useWindow = false) => {
       countries: [],
       languages: [],
       fiscalYears: [],
-
+      accounts:[],
       // Menus
       mainMenu: [],
       settingMenu: [],
@@ -34,6 +36,7 @@ export const useGlobalStore = (useWindow = false) => {
       isAppLoaded: false,
       isSidebarOpen: false,
       areCurrenciesLoading: false,
+      areAccountsLoading: false,
 
       downloadReport: null,
     }),
@@ -47,8 +50,13 @@ export const useGlobalStore = (useWindow = false) => {
     actions: {
       bootstrap() {
         return new Promise((resolve, reject) => {
+          console.log(window.axios)
           axios
-            .get('/api/v1/bootstrap')
+            .get('/api/v1/bootstrap', {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+              }
+            })
             .then((response) => {
               const companyStore = useCompanyStore()
               const userStore = useUserStore()
@@ -110,6 +118,31 @@ export const useGlobalStore = (useWindow = false) => {
               .catch((err) => {
                 handleError(err)
                 this.areCurrenciesLoading = false
+                reject(err)
+              })
+          }
+        })
+      },
+
+
+      fetchAccounts() {
+        return new Promise((resolve, reject) => {
+          if (this.areAccountsLoading) {
+            resolve(this.accounts)
+          } else {
+            this.areAccountsLoading = true
+            axios
+              .get('/api/v1/accounts')
+              .then((response) => {
+                this.accounts = response.data.filter((currency) => {
+                  return (currency.name = `${currency.code} - ${currency.name} - ${currency?.balance || 0}`)
+                })
+                this.areAccountsLoading = false
+                resolve(response)
+              })
+              .catch((err) => {
+                handleError(err)
+                this.areAccountsLoading = false
                 reject(err)
               })
           }

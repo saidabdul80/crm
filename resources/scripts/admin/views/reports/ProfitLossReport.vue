@@ -75,7 +75,7 @@
           rounded
           whitespace-nowrap
           md:hidden
-          bg-primary-500
+          bg-gray-500
         "
         @click="viewReportsPDF"
       >

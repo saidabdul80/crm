@@ -140,7 +140,7 @@
             href="#"
             aria-current="page"
             :class="{
-              'z-10 bg-primary-50 border-primary-500 text-primary-600':
+              'z-10 bg-gray-50 border-gray-500 text-primary-600':
                 isActive(1),
               'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
                 !isActive(1),
@@ -182,7 +182,7 @@
             :key="page"
             href="#"
             :class="{
-              'z-10 bg-primary-50 border-primary-500 text-primary-600':
+              'z-10 bg-gray-50 border-gray-500 text-primary-600':
                 isActive(page),
               'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
                 !isActive(page),
@@ -229,7 +229,7 @@
             href="#"
             aria-current="page"
             :class="{
-              'z-10 bg-primary-50 border-primary-500 text-primary-600':
+              'z-10 bg-gray-50 border-gray-500 text-primary-600':
                 isActive(pagination.totalPages),
               'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
                 !isActive(pagination.totalPages),

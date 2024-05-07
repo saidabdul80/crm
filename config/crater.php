@@ -256,6 +256,16 @@ return [
             'model' => ''
         ],
         [
+            'title' => 'settings.menu_title.others',
+            'group' => '',
+            'name' => 'Others',
+            'link' => '/admin/settings/others',
+            'icon' => 'FolderIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => ''
+        ],
+        [
             'title' => 'settings.menu_title.backup',
             'group' => '',
             'name' => 'Backup',
@@ -321,7 +331,7 @@ return [
             'ability' => 'view-estimate',
             'model' => Estimate::class
         ],
-        [
+         [
             'title' => 'navigation.invoices',
             'group' => 2,
             'link' => '/admin/invoices',
@@ -351,7 +361,7 @@ return [
             'ability' => 'view-payment',
             'model' => Payment::class
         ],
-        [
+    /*     [
             'title' => 'navigation.expenses',
             'group' => 2,
             'link' => '/admin/expenses',
@@ -360,7 +370,7 @@ return [
             'owner_only' => false,
             'ability' => 'view-expense',
             'model' => Expense::class
-        ],
+        ], */
         [
             'title' => 'navigation.modules',
             'group' => 3,

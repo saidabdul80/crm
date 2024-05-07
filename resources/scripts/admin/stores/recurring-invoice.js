@@ -18,7 +18,10 @@ import { useNotificationStore } from '@/scripts/stores/notification'
 export const useRecurringInvoiceStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
-
+  axios.interceptors.request.use((config) => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+    return config;
+  });
   return defineStoreFunc({
     id: 'recurring-invoice',
 

@@ -53,11 +53,10 @@
                 <div class="flex-auto flex-fill bd-highlight">
                   <div class="relative w-full">
                     <BaseMoney
+                      :currency="store[storeProp].paying_currency"
                       :key="selectedCurrency"
-                      v-model="price"
-                      :invalid="v$.price.$error"
-                      :content-loading="loading"
-                      :currency="selectedCurrency"
+                      :value="price"
+                      disabled
                     />
                   </div>
                 </div>
@@ -136,6 +135,7 @@
                   />
                 </div>
               </div>
+
             </td>
           </tr>
           <tr v-if="store[storeProp].tax_per_item === 'YES'">
@@ -173,10 +173,11 @@
       </table>
     </td>
   </tr>
+
 </template>
 
 <script setup>
-import { computed, ref, inject } from 'vue'
+import { computed, ref, inject, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Guid from 'guid'
@@ -195,6 +196,7 @@ import useVuelidate from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useItemStore } from '@/scripts/admin/stores/item'
 import DragIcon from '@/scripts/components/icons/DragIcon.vue'
+
 
 const props = defineProps({
   store: {
@@ -237,12 +239,14 @@ const props = defineProps({
 
 const emit = defineEmits(['update', 'remove', 'itemValidate'])
 
+
 const companyStore = useCompanyStore()
 const itemStore = useItemStore()
 
 let route = useRoute()
 const { t } = useI18n()
 
+const mainTotal = ref(0);
 const quantity = computed({
   get: () => {
     return props.itemData.quantity
@@ -251,8 +255,9 @@ const quantity = computed({
     updateItemAttribute('quantity', parseFloat(newValue))
   },
 })
+const price = ref(0);
 
-const price = computed({
+/* const price = computed({
   get: () => {
     const price = props.itemData.price
 
@@ -272,7 +277,7 @@ const price = computed({
       updateItemAttribute('price', newValue)
     }
   },
-})
+}) */
 
 const subtotal = computed(() => props.itemData.price * props.itemData.quantity)
 
@@ -282,9 +287,9 @@ const discount = computed({
   },
   set: (newValue) => {
     if (props.itemData.discount_type === 'percentage') {
-      updateItemAttribute('discount_val', (subtotal.value * newValue) / 100)
+      updateItemAttribute('discount_val', (subtotal.value * newValue))
     } else {
-      updateItemAttribute('discount_val', Math.round(newValue * 100))
+      updateItemAttribute('discount_val', Math.round(newValue))
     }
 
     updateItemAttribute('discount', newValue)
@@ -292,7 +297,7 @@ const discount = computed({
 })
 
 const total = computed(() => {
-  return subtotal.value - props.itemData.discount_val
+  return (mainTotal.value + subtotal.value) - props.itemData.discount_val
 })
 
 const selectedCurrency = computed(() => {
@@ -334,6 +339,25 @@ const totalCompoundTax = computed(() => {
 
 const totalTax = computed(() => totalSimpleTax.value + totalCompoundTax.value)
 
+const updatePrice = function(){
+  const rate = props.store[props.storeProp]?.exchange_rate;
+  if(rate){
+    price.value = rate;
+    mainTotal.value = rate * quantity.value
+    return;
+  }
+  mainTotal.value =0
+
+}
+
+  watch(() => props.store[props.storeProp], (newValue, oldValue) => {
+    updatePrice()
+  }, { deep: true, immediate: true });
+
+  watch(() => quantity, (newValue, oldValue) => {
+    updatePrice()
+  });
+
 const rules = {
   name: {
     required: helpers.withMessage(t('validation.required'), required),
@@ -349,7 +373,7 @@ const rules = {
       maxLength(20)
     ),
   },
-  price: {
+/*   price: {
     required: helpers.withMessage(t('validation.required'), required),
     minValue: helpers.withMessage(
       t('validation.number_length_minvalue'),
@@ -359,7 +383,7 @@ const rules = {
       t('validation.price_maxlength'),
       maxLength(20)
     ),
-  },
+  }, */
   discount_val: {
     between: helpers.withMessage(
       t('validation.discount_maxlength'),
@@ -440,10 +464,7 @@ function onSelectItem(itm) {
       })
     }
 
-    if (state[props.storeProp].exchange_rate) {
-      state[props.storeProp].items[props.index].price /=
-        state[props.storeProp].exchange_rate
-    }
+
   })
 
   itemStore.fetchItems()
@@ -455,7 +476,7 @@ function selectFixed() {
     return
   }
 
-  updateItemAttribute('discount_val', Math.round(props.itemData.discount * 100))
+  updateItemAttribute('discount_val', Math.round(props.itemData.discount))
   updateItemAttribute('discount_type', 'fixed')
 }
 

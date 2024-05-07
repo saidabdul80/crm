@@ -29,7 +29,7 @@
     >
       <BaseInput
         v-model="searchData.searchText"
-        :placeholder="$t('general.search')"
+        :placeholder="'Search'"
         container-class="mb-6"
         type="text"
         variant="gray"
@@ -61,7 +61,7 @@
               border-b border-gray-200 border-solid
             "
           >
-            {{ $t('general.sort_by') }}
+            {{ 'Sort By' }}
           </div>
 
           <div class="px-2">
@@ -72,7 +72,7 @@
                 <BaseRadio
                   id="filter_create_date"
                   v-model="searchData.orderByField"
-                  :label="$t('customers.create_date')"
+                  :label="'Create Date'"
                   size="sm"
                   name="filter"
                   value="invoices.created_at"
@@ -88,7 +88,7 @@
                 <BaseRadio
                   id="filter_display_name"
                   v-model="searchData.orderByField"
-                  :label="$t('customers.display_name')"
+                  :label="'Display Name'"
                   size="sm"
                   name="filter"
                   value="name"
@@ -124,7 +124,7 @@
           :class="[
             'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-transparent',
             {
-              'bg-gray-100 border-l-4 border-primary-500 border-solid':
+              'bg-gray-100 border-l-4 border-gray-500 border-solid':
                 hasActiveUrl(customer.id),
             },
           ]"
@@ -177,7 +177,7 @@
         v-if="!customerList?.length && !isFetching"
         class="flex justify-center px-4 mt-5 text-sm text-gray-600"
       >
-        {{ $t('customers.no_matching_customers') }}
+        {{ 'No Matching Customers' }}
       </p>
     </div>
   </div>
@@ -185,7 +185,7 @@
 
 <script setup>
 import { computed, ref, reactive } from 'vue'
-import { useI18n } from 'vue-i18n'
+//import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
@@ -193,7 +193,7 @@ import { debounce } from 'lodash'
 
 const customerStore = useCustomerStore()
 const route = useRoute()
-const { t } = useI18n()
+//const { t } = useI18n()
 
 let isFetching = ref(false)
 

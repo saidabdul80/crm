@@ -23,6 +23,7 @@ class CurrencyResource extends JsonResource
             'thousand_separator' => $this->thousand_separator,
             'decimal_separator' => $this->decimal_separator,
             'swap_currency_symbol' => $this->swap_currency_symbol,
+            'reserve' => $this->reserve,
             'exchange_rate' => $this->exchange_rate
         ];
     }

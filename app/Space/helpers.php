@@ -134,7 +134,7 @@ function format_money_pdf($money, $currency = null)
     }
 
     $format_money = number_format(
-        $money,
+        $money*100,
         $currency->precision,
         $currency->decimal_separator,
         $currency->thousand_separator

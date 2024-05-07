@@ -39,7 +39,6 @@
                 text-sm
                 font-normal
                 cursor-pointer
-                hover:bg-gray-100
                 rounded
                 ml-1
                 py-0.5
@@ -78,7 +77,7 @@ const props = defineProps({
   },
   fields: {
     type: Array,
-    default: null,
+    default: [],
   },
 })
 
@@ -135,122 +134,99 @@ const value = computed({
 async function fetchFields() {
   await customFieldsStore.fetchCustomFields()
 }
-
 async function getFields() {
-  fieldList.value = []
-  if (props.fields && props.fields.length > 0) {
-    if (props.fields.find((field) => field == 'shipping')) {
-      fieldList.value.push({
-        label: 'Shipping Address',
-        fields: [
-          { label: 'Address name', value: 'SHIPPING_ADDRESS_NAME' },
-          { label: 'Country', value: 'SHIPPING_COUNTRY' },
-          { label: 'State', value: 'SHIPPING_STATE' },
-          { label: 'City', value: 'SHIPPING_CITY' },
-          { label: 'Address Street 1', value: 'SHIPPING_ADDRESS_STREET_1' },
-          { label: 'Address Street 2', value: 'SHIPPING_ADDRESS_STREET_2' },
-          { label: 'Phone', value: 'SHIPPING_PHONE' },
-          { label: 'Zip Code', value: 'SHIPPING_ZIP_CODE' },
-        ],
-      })
-    }
+  try {
+    fieldList.value = [];
 
-    if (props.fields.find((field) => field == 'billing')) {
-      fieldList.value.push({
-        label: 'Billing Address',
-        fields: [
-          { label: 'Address name', value: 'BILLING_ADDRESS_NAME' },
-          { label: 'Country', value: 'BILLING_COUNTRY' },
-          { label: 'State', value: 'BILLING_STATE' },
-          { label: 'City', value: 'BILLING_CITY' },
-          { label: 'Address Street 1', value: 'BILLING_ADDRESS_STREET_1' },
-          { label: 'Address Street 2', value: 'BILLING_ADDRESS_STREET_2' },
-          { label: 'Phone', value: 'BILLING_PHONE' },
-          { label: 'Zip Code', value: 'BILLING_ZIP_CODE' },
-        ],
-      })
-    }
+    const generateFieldDefinition = (labelPrefix, valuePrefix, fields) => {
+      return {
+        label: labelPrefix + ' Address',
+        fields: fields.map(field => ({ label: field.label, value: valuePrefix + field.value }))
+      };
+    };
 
-    if (props.fields.find((field) => field == 'customer')) {
-      fieldList.value.push({
+    const fieldDefinitions = {
+      shipping: generateFieldDefinition('Shipping', 'SHIPPING_', [
+        { label: 'Address name', value: 'ADDRESS_NAME' },
+        { label: 'Country', value: 'COUNTRY' },
+        { label: 'State', value: 'STATE' },
+        { label: 'City', value: 'CITY' },
+        { label: 'Address Street 1', value: 'ADDRESS_STREET_1' },
+        { label: 'Address Street 2', value: 'ADDRESS_STREET_2' },
+        { label: 'Phone', value: 'PHONE' },
+        { label: 'Zip Code', value: 'ZIP_CODE' }
+      ]),
+      billing: generateFieldDefinition('Billing', 'BILLING_', [
+        { label: 'Address name', value: 'ADDRESS_NAME' },
+        { label: 'Country', value: 'COUNTRY' },
+        { label: 'State', value: 'STATE' },
+        { label: 'City', value: 'CITY' },
+        { label: 'Address Street 1', value: 'ADDRESS_STREET_1' },
+        { label: 'Address Street 2', value: 'ADDRESS_STREET_2' },
+        { label: 'Phone', value: 'PHONE' },
+        { label: 'Zip Code', value: 'ZIP_CODE' }
+      ]),
+      customer: {
         label: 'Customer',
         fields: [
           { label: 'Display Name', value: 'CONTACT_DISPLAY_NAME' },
           { label: 'Contact Name', value: 'PRIMARY_CONTACT_NAME' },
           { label: 'Email', value: 'CONTACT_EMAIL' },
           { label: 'Phone', value: 'CONTACT_PHONE' },
-          { label: 'Website', value: 'CONTACT_WEBSITE' },
-          ...customerFields.value.map((i) => ({
-            label: i.label,
-            value: i.slug,
-          })),
-        ],
-      })
-    }
-
-    if (props.fields.find((field) => field == 'invoice')) {
-      fieldList.value.push({
+          { label: 'Website', value: 'CONTACT_WEBSITE' }
+        ]
+      },
+      invoice: {
         label: 'Invoice',
         fields: [
           { label: 'Date', value: 'INVOICE_DATE' },
           { label: 'Due Date', value: 'INVOICE_DUE_DATE' },
           { label: 'Number', value: 'INVOICE_NUMBER' },
-          { label: 'Ref Number', value: 'INVOICE_REF_NUMBER' },
-          ...invoiceFields.value.map((i) => ({
-            label: i.label,
-            value: i.slug,
-          })),
-        ],
-      })
-    }
-
-    if (props.fields.find((field) => field == 'estimate')) {
-      fieldList.value.push({
+          { label: 'Ref Number', value: 'INVOICE_REF_NUMBER' }
+        ]
+      },
+      estimate: {
         label: 'Estimate',
         fields: [
           { label: 'Date', value: 'ESTIMATE_DATE' },
           { label: 'Expiry Date', value: 'ESTIMATE_EXPIRY_DATE' },
           { label: 'Number', value: 'ESTIMATE_NUMBER' },
-          { label: 'Ref Number', value: 'ESTIMATE_REF_NUMBER' },
-          ...estimateFields.value.map((i) => ({
-            label: i.label,
-            value: i.slug,
-          })),
-        ],
-      })
-    }
-
-    if (props.fields.find((field) => field == 'payment')) {
-      fieldList.value.push({
+          { label: 'Ref Number', value: 'ESTIMATE_REF_NUMBER' }
+        ]
+      },
+      payment: {
         label: 'Payment',
         fields: [
           { label: 'Date', value: 'PAYMENT_DATE' },
           { label: 'Number', value: 'PAYMENT_NUMBER' },
           { label: 'Mode', value: 'PAYMENT_MODE' },
-          { label: 'Amount', value: 'PAYMENT_AMOUNT' },
-          ...paymentFields.value.map((i) => ({
-            label: i.label,
-            value: i.slug,
-          })),
-        ],
-      })
-    }
+          { label: 'Amount', value: 'PAYMENT_AMOUNT' }
+        ]
+      },
+      company: generateFieldDefinition('Company', 'COMPANY_', [
+        { label: 'Company Name', value: 'NAME' },
+        { label: 'Country', value: 'COUNTRY' },
+        { label: 'State', value: 'STATE' },
+        { label: 'City', value: 'CITY' },
+        { label: 'Address Street 1', value: 'ADDRESS_STREET_1' },
+        { label: 'Address Street 2', value: 'ADDRESS_STREET_2' },
+        { label: 'Phone', value: 'PHONE' },
+        { label: 'Zip Code', value: 'ZIP_CODE' }
+      ])
+    };
 
-    if (props.fields.find((field) => field == 'company')) {
-      fieldList.value.push({
-        label: 'Company',
-        fields: [
-          { label: 'Company Name', value: 'COMPANY_NAME' },
-          { label: 'Country', value: 'COMPANY_COUNTRY' },
-          { label: 'State', value: 'COMPANY_STATE' },
-          { label: 'City', value: 'COMPANY_CITY' },
-          { label: 'Address Street 1', value: 'COMPANY_ADDRESS_STREET_1' },
-          { label: 'Address Street 2', value: 'COMPANY_ADDRESS_STREET_2' },
-          { label: 'Phone', value: 'COMPANY_PHONE' },
-          { label: 'Zip Code', value: 'COMPANY_ZIP_CODE' },
-        ],
-      })
+    if (props.fields && props.fields.length > 0) {
+      const availableFields = Object.keys(fieldDefinitions);
+
+      for (const field of props.fields) {
+        if (availableFields.includes(field)) {
+          fieldList.value.push(fieldDefinitions[field]);
+        }
+      }
     }
+  } catch (error) {
+    console.error('Error fetching fields:', error);
+    // Handle error here
   }
 }
 

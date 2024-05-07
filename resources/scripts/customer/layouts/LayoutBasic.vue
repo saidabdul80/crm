@@ -2,7 +2,6 @@
   <div v-if="isAppLoaded" class="h-full">
     <NotificationRoot />
 
-    <SiteHeader />
 
     <!-- <SiteSidebar /> -->
 

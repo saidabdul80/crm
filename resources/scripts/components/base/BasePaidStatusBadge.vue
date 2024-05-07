@@ -24,7 +24,7 @@ export default {
     const badgeColorClasses = computed(() => {
       switch (props.status) {
         case 'PAID':
-          return 'bg-primary-300 bg-opacity-25 text-primary-800 uppercase font-normal text-center'
+          return 'bg-gray-300 bg-opacity-25 text-primary-800 uppercase font-normal text-center'
         case 'UNPAID':
           return ' bg-yellow-500 bg-opacity-25 text-yellow-900 uppercase font-normal text-center '
         case 'PARTIALLY_PAID':

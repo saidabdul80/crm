@@ -42,7 +42,7 @@
           {{ $t('settings.update_app.avail_update') }}
         </BaseHeading>
 
-        <div class="rounded-md bg-primary-50 p-4 mb-3">
+        <div class="rounded-md bg-gray-50 p-4 mb-3">
           <div class="flex">
             <div class="shrink-0">
               <BaseIcon
@@ -264,7 +264,11 @@ window.addEventListener('beforeunload', (event) => {
 
 // Created
 
-axios.get('/api/v1/app/version').then((res) => {
+window.axios.get('/api/v1/app/version', {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+              }
+            }).then((res) => {
   currentVersion.value = res.data.version
 })
 
@@ -306,7 +310,7 @@ function statusClass(step) {
 async function checkUpdate() {
   try {
     isCheckingforUpdate.value = true
-    let response = await axios.get('/api/v1/check/update')
+    let response = await window.axios.get('/api/v1/check/update')
     isCheckingforUpdate.value = false
     if (!response.data.version) {
       notificationStore.showNotification({
@@ -367,7 +371,7 @@ function onUpdateApp() {
               path: path || null,
             }
 
-            let requestResponse = await axios.post(
+            let requestResponse = await window.axios.post(
               currentStep.stepUrl,
               updateParams
             )

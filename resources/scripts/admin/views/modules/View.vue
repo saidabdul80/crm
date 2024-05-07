@@ -32,7 +32,7 @@
                 :class="[
                   'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50',
                   {
-                    'outline-none ring ring-offset-1 ring-primary-500':
+                    'outline-none ring ring-offset-1 bg-gray-500':
                       displayVideo,
                   },
                 ]"
@@ -66,7 +66,7 @@
                 :class="[
                   'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50',
                   {
-                    'outline-none ring ring-offset-1 ring-primary-500':
+                    'outline-none ring ring-offset-1 bg-gray-500':
                       displayImage === screenshot.url,
                   },
                 ]"
@@ -193,7 +193,7 @@
                       ? 'rounded-bl-md rounded-br-md'
                       : '',
                     checked
-                      ? 'bg-primary-50 border-primary-200 z-10'
+                      ? 'bg-gray-50 border-gray-200 z-10'
                       : 'border-gray-200',
                     'relative border p-4 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-2 focus:outline-none',
                   ]"
@@ -202,9 +202,9 @@
                     <span
                       :class="[
                         checked
-                          ? 'bg-primary-600 border-transparent'
+                          ? 'bg-gray-600 border-transparent'
                           : 'bg-white border-gray-300',
-                        active ? 'ring-2 ring-offset-2 ring-primary-500' : '',
+                        active ? 'ring-2 ring-offset-2 bg-gray-500' : '',
                         'h-4 w-4 rounded-full border flex items-center justify-center',
                       ]"
                       aria-hidden="true"
@@ -490,7 +490,7 @@
               <button
                 :class="[
                   selected
-                    ? 'border-primary-600 text-primary-600'
+                    ? 'border-gray-600 text-primary-600'
                     : 'border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300',
                   'whitespace-nowrap py-6 border-b-2 font-medium text-sm',
                 ]"
@@ -502,7 +502,7 @@
               <button
                 :class="[
                   selected
-                    ? 'border-primary-600 text-primary-600'
+                    ? 'border-gray-600 text-primary-600'
                     : 'border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300',
                   'whitespace-nowrap py-6 border-b-2 font-medium text-sm',
                 ]"
@@ -514,7 +514,7 @@
               <button
                 :class="[
                   selected
-                    ? 'border-primary-600 text-primary-600'
+                    ? 'border-gray-600 text-primary-600'
                     : 'border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300',
                   'whitespace-nowrap py-6 border-b-2 font-medium text-sm',
                 ]"
@@ -853,7 +853,7 @@ async function installModule() {
         module: moduleData.value.module_name,
       }
 
-      let requestResponse = await axios.post(currentStep.stepUrl, updateParams)
+      let requestResponse = await window.axios.post(currentStep.stepUrl, updateParams)
 
       currentStep.completed = true
       if (requestResponse.data) {

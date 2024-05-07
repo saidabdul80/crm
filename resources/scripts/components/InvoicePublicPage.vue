@@ -60,12 +60,12 @@ I
       <InvoiceInformationCard :invoice="invoiceData" />
 
       <div
-        v-if="!customerLogo"
+        v-if="true"
         class="flex items-center justify-center mt-4 text-gray-500 font-normal"
       >
         Powered by
-        <a href="https://craterapp.com" target="_blank">
-          <img :src="getLogo()" class="h-4 ml-1 mb-1" />
+        <a href="https://cowris.com" target="_blank">
+          <img src="@/scripts/img/cowris-logo-black.png" />
         </a>
       </div>
     </div>
@@ -85,7 +85,11 @@ const router = useRouter()
 loadInvoice()
 
 async function loadInvoice() {
-  let res = await axios.get(`/customer/invoices/${route.params.hash}`)
+  let res = await window.axios.get(`/customer/invoices/${route.params.hash}`, {
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+              }
+            })
   invoiceData.value = res.data.data
 }
 
@@ -94,8 +98,8 @@ const shareableLink = computed(() => {
 })
 
 function getLogo() {
-  const imgUrl = new URL('/img/crater-logo-gray.png', import.meta.url)
-  return imgUrl
+  //const imgUrl = new URL('/img/crater-logo-gray.png', import.meta.url)
+  return 'imgUrl'
 }
 
 const customerLogo = computed(() => {

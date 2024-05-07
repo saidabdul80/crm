@@ -63,10 +63,10 @@ const inputBorderClass = computed(() => {
   if (props.invalid && !props.borderless) {
     return 'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400'
   } else if (!props.borderless) {
-    return 'focus:ring-primary-400 focus:border-primary-400'
+    return ' focus:border-gray-400'
   }
 
-  return 'border-none outline-none focus:ring-primary-400 focus:border focus:border-primary-400'
+  return 'border-none outline-none  focus:border focus:border-gray-400'
 })
 
 const loadingPlaceholderSize = computed(() => {

@@ -82,7 +82,7 @@
                 :to="item.link"
                 :class="[
                   hasActiveUrl(item.link)
-                    ? 'text-primary-500 border-primary-500 bg-gray-100 '
+                    ? 'text-primary-500 border-gray-500 bg-gray-100 '
                     : 'text-black',
                   'cursor-pointer px-0 pl-4 py-3 border-transparent flex items-center border-l-4 border-solid text-sm not-italic font-medium',
                 ]"
@@ -126,9 +126,9 @@
     "
   >
     <div
-      v-for="menu in globalStore.menuGroups"
+      v-for="(menu,i) in globalStore.menuGroups"
       :key="menu"
-      class="p-0 m-0 mt-6 list-none"
+      class="p-0 m-0 list-none" :class="i==0?'mt-6':''"
     >
       <router-link
         v-for="item in menu"
@@ -136,7 +136,7 @@
         :to="item.link"
         :class="[
           hasActiveUrl(item.link)
-            ? 'text-primary-500 border-primary-500 bg-gray-100 '
+            ? 'text-primary-500 border-gray-500 bg-gray-100 '
             : 'text-black',
           'cursor-pointer px-0 pl-6 hover:bg-gray-50 py-3 group flex items-center border-l-4 border-solid border-transparent text-sm not-italic font-medium',
         ]"

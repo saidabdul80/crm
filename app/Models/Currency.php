@@ -9,7 +9,12 @@ class Currency extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'reserve'
+    ];
+
     protected $guarded = [
         'id'
     ];
+
 }

@@ -27,8 +27,12 @@ export const useCategoryStore = (useWindow = false) => {
     actions: {
       fetchCategories(params) {
         return new Promise((resolve, reject) => {
-          axios
-            .get(`/api/v1/categories`, { params })
+          axios.get(`/api/v1/categories`, {
+            params,
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
             .then((response) => {
               this.categories = response.data.data
               resolve(response)
@@ -42,8 +46,11 @@ export const useCategoryStore = (useWindow = false) => {
 
       fetchCategory(id) {
         return new Promise((resolve, reject) => {
-          axios
-            .get(`/api/v1/categories/${id}`)
+          axios.get(`/api/v1/categories/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
             .then((response) => {
               this.currentCategory = response.data.data
               resolve(response)
@@ -57,8 +64,12 @@ export const useCategoryStore = (useWindow = false) => {
 
       addCategory(data) {
         return new Promise((resolve, reject) => {
-          axios
-            .post('/api/v1/categories', data)
+          axios.post('/api/v1/categories', data, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
+
             .then((response) => {
               this.categories.push(response.data.data)
               const notificationStore = useNotificationStore()
@@ -77,8 +88,12 @@ export const useCategoryStore = (useWindow = false) => {
 
       updateCategory(data) {
         return new Promise((resolve, reject) => {
-          axios
-            .put(`/api/v1/categories/${data.id}`, data)
+          axios.put(`/api/v1/categories/${data.id}`, data, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
+
             .then((response) => {
               if (response.data) {
                 let pos = this.categories.findIndex(
@@ -104,8 +119,11 @@ export const useCategoryStore = (useWindow = false) => {
 
       deleteCategory(id) {
         return new Promise((resolve) => {
-          axios
-            .delete(`/api/v1/categories/${id}`)
+          axios.delete(`/api/v1/categories/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
             .then((response) => {
               let index = this.categories.findIndex(
                 (category) => category.id === id

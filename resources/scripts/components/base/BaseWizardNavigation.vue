@@ -58,7 +58,7 @@ export default {
     },
     currentStepClass: {
       type: String,
-      default: 'bg-white border-primary-500',
+      default: 'bg-white border-gray-500',
     },
     nextStepClass: {
       type: String,
@@ -67,7 +67,7 @@ export default {
     previousStepClass: {
       type: String,
       default:
-        'bg-primary-500 border-primary-500 flex justify-center items-center',
+        'bg-gray-500 border-gray-500 flex justify-center items-center',
     },
     iconClass: {
       type: String,

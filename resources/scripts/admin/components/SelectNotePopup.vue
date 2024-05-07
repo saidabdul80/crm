@@ -200,7 +200,7 @@ function selectNote(data, close) {
 
 function openNoteModal() {
   modalStore.openModal({
-    title: t('settings.customization.notes.add_note'),
+    title:" t('settings.customization.notes.add_note')",
     componentName: 'NoteModal',
     size: 'lg',
     data: props.type,

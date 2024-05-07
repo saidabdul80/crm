@@ -17,7 +17,7 @@
           name="PencilIcon"
           class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
         />
-        {{ $t('general.edit') }}
+        {{ 'Edit' }}
       </BaseDropdownItem>
     </router-link>
 
@@ -34,7 +34,7 @@
           name="EyeIcon"
           class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
         />
-        {{ $t('general.view') }}
+        {{ 'View' }}
       </BaseDropdownItem>
     </router-link>
 
@@ -47,7 +47,7 @@
         name="TrashIcon"
         class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
       />
-      {{ $t('general.delete') }}
+      {{ 'Delete' }}
     </BaseDropdownItem>
   </BaseDropdown>
 </template>
@@ -57,7 +57,7 @@ import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useModalStore } from '@/scripts/stores/modal'
-import { useI18n } from 'vue-i18n'
+//import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { inject } from 'vue'
@@ -83,7 +83,7 @@ const notificationStore = useNotificationStore()
 const dialogStore = useDialogStore()
 const userStore = useUserStore()
 
-const { t } = useI18n()
+//const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const utils = inject('utils')

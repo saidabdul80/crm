@@ -90,7 +90,7 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'font-base pl-8 py-2 outline-none focus:ring-primary-400 focus:outline-none focus:border-primary-400 block w-full sm:text-sm border-gray-200 rounded-md text-black',
+      'font-base pl-8 py-2 outline-none focus:bg-gray-400 focus:outline-none focus:border-gray-400 block w-full sm:text-sm border-gray-200 rounded-md text-black',
   },
   time24hr: {
     type: Boolean,

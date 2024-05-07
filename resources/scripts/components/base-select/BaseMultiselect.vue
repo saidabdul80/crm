@@ -442,7 +442,7 @@ export default {
           'cursor-default bg-gray-200 bg-opacity-50 !text-gray-400',
         containerOpen: '',
         containerOpenTop: '',
-        containerActive: 'ring-1 ring-primary-400 border-primary-400',
+        containerActive: 'ring-1 bg-gray-400 border-gray-400',
         containerInvalid:
           'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400',
         containerInvalidActive: 'ring-1 border-red-400 ring-red-400',
@@ -453,7 +453,7 @@ export default {
         search:
           'w-full absolute inset-0 outline-none appearance-none box-border border-0 text-sm font-sans bg-white rounded-md pl-3.5',
         tags: 'grow shrink flex flex-wrap mt-1 pl-2',
-        tag: 'bg-primary-500 text-white text-sm font-semibold py-0.5 pl-2 rounded mr-1 mb-1 flex items-center whitespace-nowrap',
+        tag: 'bg-gray-500 text-white text-sm font-semibold py-0.5 pl-2 rounded mr-1 mb-1 flex items-center whitespace-nowrap',
         tagDisabled: 'pr-2 !bg-gray-400 text-white',
         tagRemove:
           'flex items-center justify-center p-1 mx-0.5 rounded-sm hover:bg-black hover:bg-opacity-10 group',
@@ -486,20 +486,20 @@ export default {
           'flex text-sm box-border items-center justify-start text-left py-1 px-3 font-semibold bg-gray-200 cursor-default leading-normal',
         groupLabelPointable: 'cursor-pointer',
         groupLabelPointed: 'bg-gray-300 text-gray-700',
-        groupLabelSelected: 'bg-primary-600 text-white',
+        groupLabelSelected: 'bg-gray-600 text-white',
         groupLabelDisabled: 'bg-gray-100 text-gray-300 cursor-not-allowed',
-        groupLabelSelectedPointed: 'bg-primary-600 text-white opacity-90',
+        groupLabelSelectedPointed: 'bg-gray-600 text-white opacity-90',
         groupLabelSelectedDisabled:
-          'text-primary-100 bg-primary-600 bg-opacity-50 cursor-not-allowed',
+          'text-primary-100 bg-gray-600 bg-opacity-50 cursor-not-allowed',
         groupOptions: 'p-0 m-0',
         option:
           'flex items-center justify-start box-border text-left cursor-pointer text-sm leading-snug py-2 px-3',
         optionPointed: 'text-gray-800 bg-gray-100',
-        optionSelected: 'text-white bg-primary-500',
+        optionSelected: 'text-white bg-gray-500',
         optionDisabled: 'text-gray-300 cursor-not-allowed',
-        optionSelectedPointed: 'text-white bg-primary-500 opacity-90',
+        optionSelectedPointed: 'text-white bg-gray-500 opacity-90',
         optionSelectedDisabled:
-          'text-primary-100 bg-primary-500 bg-opacity-50 cursor-not-allowed',
+          'text-primary-100 bg-gray-500 bg-opacity-50 cursor-not-allowed',
         noOptions: 'py-2 px-3 text-gray-600 bg-white',
         noResults: 'py-2 px-3 text-gray-600 bg-white',
         fakeInput:

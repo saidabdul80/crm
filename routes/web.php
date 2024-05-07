@@ -31,7 +31,7 @@ Route::get('/modules/scripts/{script}', ScriptController::class);
 // Admin Auth
 // ----------------------------------------------
 
-Route::post('login', [LoginController::class, 'login']);
+Route::post('login', [LoginController::class, 'login'])->name('post-login');
 
 Route::post('auth/logout', function () {
     Auth::guard('web')->logout();
@@ -128,7 +128,7 @@ Route::get('/installation', function () {
 
 Route::get('/admin/{vue?}', function () {
     return view('app');
-})->where('vue', '[\/\w\.-]*')->name('admin.dashboard')->middleware(['install', 'redirect-if-unauthenticated']);
+})->where('vue', '[\/\w\.-]*')->name('admin.dashboard')->middleware([ 'redirect-if-unauthenticated']);
 
 Route::get('{company:slug}/customer/{vue?}', function (Company $company) {
     return view('app')->with([
@@ -140,16 +140,19 @@ Route::get('{company:slug}/customer/{vue?}', function (Company $company) {
 
 Route::get('/', function () {
     return view('app');
-})->where('vue', '[\/\w\.-]*')->name('home')->middleware(['install', 'guest']);
+})->where('vue', '[\/\w\.-]*')->name('home')->middleware([ 'guest']);
 
 Route::get('/reset-password/{token}', function () {
     return view('app');
-})->where('vue', '[\/\w\.-]*')->name('reset-password')->middleware(['install', 'guest']);
+})->where('vue', '[\/\w\.-]*')->name('reset-password')->middleware([ 'guest']);
 
 Route::get('/forgot-password', function () {
     return view('app');
-})->where('vue', '[\/\w\.-]*')->name('forgot-password')->middleware(['install', 'guest']);
+})->where('vue', '[\/\w\.-]*')->name('forgot-password')->middleware([ 'guest']);
 
 Route::get('/login', function () {
     return view('app');
-})->where('vue', '[\/\w\.-]*')->name('login')->middleware(['install', 'guest']);
+})->where('vue', '[\/\w\.-]*')->name('login')->middleware([ 'guest']);
+Route::get('/sanctum/csrf-cookie', function () {
+    return csrf_token();
+});

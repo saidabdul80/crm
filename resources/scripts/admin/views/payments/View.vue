@@ -149,7 +149,7 @@
             :class="[
               'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-transparent',
               {
-                'bg-gray-100 border-l-4 border-primary-500 border-solid':
+                'bg-gray-100 border-l-4 border-gray-500 border-solid':
                   hasActiveUrl(payment.id),
               },
             ]"

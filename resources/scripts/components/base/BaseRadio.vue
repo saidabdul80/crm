@@ -66,7 +66,7 @@ const props = defineProps({
   },
   checkedStateClass: {
     type: String,
-    default: 'bg-primary-600',
+    default: 'bg-gray-600',
   },
   unCheckedStateClass: {
     type: String,
@@ -74,7 +74,7 @@ const props = defineProps({
   },
   optionGroupActiveStateClass: {
     type: String,
-    default: 'ring-2 ring-offset-2 ring-primary-500',
+    default: 'ring-2 ring-offset-2 bg-gray-500',
   },
   checkedStateLabelClass: {
     type: String,

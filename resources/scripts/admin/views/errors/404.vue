@@ -22,7 +22,7 @@
             text-center text-white
             rounded
             whitespace-nowrap
-            bg-primary-500
+            bg-gray-500
             btn-lg
             hover:text-white
           "

@@ -78,6 +78,6 @@ const disabledClass = computed(() => {
     return 'text-gray-300 cursor-not-allowed'
   }
 
-  return 'text-primary-600 focus:ring-primary-500'
+  return 'text-primary-600 '
 })
 </script>

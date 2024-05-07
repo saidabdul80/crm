@@ -138,7 +138,7 @@ export const useInstallationStore = (useWindow = false) => {
 
       installationLogin() {
         return new Promise((resolve, reject) => {
-          axios.get('/sanctum/csrf-cookie').then((response) => {
+          window.axios.get('/sanctum/csrf-cookie').then((response) => {
             if (response) {
               axios
                 .post('/api/v1/installation/login')

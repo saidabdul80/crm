@@ -6,7 +6,10 @@ import { useNotificationStore } from '@/scripts/stores/notification'
 export const useModuleStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
-
+  axios.interceptors.request.use((config) => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+    return config;
+  });
   return defineStoreFunc({
     id: 'modules',
 
@@ -52,7 +55,7 @@ export const useModuleStore = (useWindow = false) => {
                 this.apiToken = null,
                 this.currentUser.api_token = null,
                 window.router.push('/admin/modules')
-              } else { 
+              } else {
                 this.currentModule = response.data
               }
 

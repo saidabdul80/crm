@@ -2,6 +2,10 @@ import { handleError } from '@/scripts/customer/helpers/error-handling'
 import { useUserStore } from './user'
 const { defineStore } = window.pinia
 import axios from 'axios'
+axios.interceptors.request.use((config) => {
+  config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+  return config;
+});
 export const useGlobalStore = defineStore({
   id: 'CustomerPortalGlobalStore',
   state: () => ({

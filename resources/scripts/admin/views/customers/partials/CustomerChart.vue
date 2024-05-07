@@ -7,7 +7,7 @@
         <div class="flex justify-between mt-1 mb-6">
           <h6 class="flex items-center">
             <BaseIcon name="ChartSquareBarIcon" class="h-5 text-primary-400" />
-            {{ $t('dashboard.monthly_chart.title') }}
+            {{ 'Monthly Title' }}
           </h6>
 
           <div class="w-40 h-10">
@@ -16,7 +16,7 @@
               :options="years"
               :allow-empty="false"
               :show-labels="false"
-              :placeholder="$t('dashboard.select_year')"
+              :placeholder="'Select Year'"
               :can-deselect="false"
               @select="onChangeYear"
             />
@@ -48,7 +48,7 @@
       >
         <div class="px-6 py-2">
           <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.total_sales') }}
+            {{ 'Total Sales' }}
           </span>
           <br />
           <span
@@ -64,7 +64,7 @@
 
         <div class="px-6 py-2">
           <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.total_receipts') }}
+            {{ 'Total Receipts' }}
           </span>
           <br />
 
@@ -82,7 +82,7 @@
 
         <div class="px-6 py-2">
           <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.total_expense') }}
+            {{ 'Total Expense' }}
           </span>
           <br />
           <span
@@ -99,7 +99,7 @@
 
         <div class="px-6 py-2">
           <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.net_income') }}
+            {{ 'Net Income' }}
           </span>
           <br />
           <span

@@ -7,7 +7,7 @@
 
       <Switch
         v-model="enabled"
-        :class="enabled ? 'bg-primary-500' : 'bg-gray-300'"
+        :class="enabled ? 'bg-gray-500' : 'bg-gray-300'"
         class="
           relative
           inline-flex
@@ -16,7 +16,7 @@
           transition-colors
           rounded-full
           w-11
-          focus:outline-none focus:ring-primary-500
+          focus:outline-none
         "
         v-bind="$attrs"
       >

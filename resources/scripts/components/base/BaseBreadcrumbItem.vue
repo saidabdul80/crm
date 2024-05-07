@@ -9,7 +9,7 @@
         leading-5
         text-gray-900
         outline-none
-        focus:ring-2 focus:ring-offset-2 focus:ring-primary-400
+        focus:ring-2 focus:ring-offset-2
       "
       :to="to"
     >

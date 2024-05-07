@@ -562,8 +562,8 @@ function onFileRemove(index) {
 }
 
 function getDefaultAvatar() {
-  const imgUrl = new URL('/img/default-avatar.jpg', import.meta.url)
-  return imgUrl
+ // const imgUrl = new URL('/img/default-avatar.jpg', import.meta.url)
+  return 'imgUrl'
 }
 
 onMounted(() => {

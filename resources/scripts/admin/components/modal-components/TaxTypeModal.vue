@@ -55,7 +55,7 @@
               class="
                 relative
                 w-full
-                focus:border focus:border-solid focus:border-primary
+                focus:border focus:border-solid focus:border-gray
               "
               @input="v$.currentTaxType.percent.$touch()"
             />

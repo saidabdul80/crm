@@ -31,8 +31,8 @@ const props = defineProps({
     default: '',
   },
   fields: {
-    type: Object,
-    default: null,
+    type: Array,
+    default: [],
   },
   type: {
     type: String,

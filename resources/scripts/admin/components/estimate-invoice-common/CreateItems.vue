@@ -28,7 +28,7 @@
             <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
           </BaseContentPlaceholders>
           <span v-else class="pl-7">
-            {{ $tc('items.item', 2) }}
+            {{ $t('items.item', 2) }}
           </span>
         </th>
         <th
@@ -66,7 +66,7 @@
             <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
           </BaseContentPlaceholders>
           <span v-else>
-            {{ $t('invoices.item.price') }}
+            Rate
           </span>
         </th>
         <th
@@ -144,7 +144,7 @@
       border border-t-0 border-gray-200 border-solid
       cursor-pointer
       text-primary-400
-      hover:bg-primary-100
+      hoverbg-gray-100
     "
     @click="store.addItem"
   >
@@ -181,6 +181,7 @@ const props = defineProps({
     default: '',
   },
 })
+
 
 const companyStore = useCompanyStore()
 

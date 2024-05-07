@@ -21,9 +21,12 @@ export const useBackupStore = (useWindow = false) => {
     actions: {
       fetchBackups(params) {
         return new Promise((resolve, reject) => {
-          axios
-            .get(`/api/v1/backups`, { params })
-            .then((response) => {
+          axios.get(`/api/v1/backups`, {
+            params,
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          }).then((response) => {
               this.backups = response.data.data
               resolve(response)
             })
@@ -36,8 +39,11 @@ export const useBackupStore = (useWindow = false) => {
 
       createBackup(data) {
         return new Promise((resolve, reject) => {
-          axios
-            .post(`/api/v1/backups`, data)
+          axios.post(`/api/v1/backups`, data, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
             .then((response) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
@@ -55,8 +61,12 @@ export const useBackupStore = (useWindow = false) => {
 
       removeBackup(params) {
         return new Promise((resolve, reject) => {
-          axios
-            .delete(`/api/v1/backups/${params.disk}`, { params })
+          axios.delete(`/api/v1/backups/${params.disk}`, {
+            params,
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          })
             .then((response) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({

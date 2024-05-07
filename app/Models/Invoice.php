@@ -92,6 +92,11 @@ class Invoice extends Model implements HasMedia
         return $this->belongsTo(Currency::class);
     }
 
+    public function paying_currency()
+    {
+        return $this->belongsTo(Currency::class,'paying_currency_id');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -322,6 +327,8 @@ class Invoice extends Model implements HasMedia
             $data['status'] = Invoice::STATUS_SENT;
         }
 
+        $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
+
         $invoice = Invoice::create($data);
 
         $serial = (new SerialNumberFormatter())
@@ -329,7 +336,6 @@ class Invoice extends Model implements HasMedia
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
             ->setNextNumbers();
-
         $invoice->sequence_number = $serial->nextSequenceNumber;
         $invoice->customer_sequence_number = $serial->nextCustomerSequenceNumber;
         $invoice->unique_hash = Hashids::connection(Invoice::class)->encode($invoice->id);
@@ -392,7 +398,7 @@ class Invoice extends Model implements HasMedia
         }
 
         $data['due_amount'] = ($this->due_amount + $oldTotal);
-        $data['base_due_amount'] = $data['due_amount'] * $data['exchange_rate'];
+        $data['base_due_amount'] = $data['due_amount'] ;
         $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
 
         $this->changeInvoiceStatus($data['due_amount']);
@@ -432,8 +438,7 @@ class Invoice extends Model implements HasMedia
             'items.fields.customField',
             'customer',
             'taxes'
-        ])
-            ->find($this->id);
+        ])->find($this->id);
 
         return $invoice;
     }
@@ -485,10 +490,10 @@ class Invoice extends Model implements HasMedia
         foreach ($invoiceItems as $invoiceItem) {
             $invoiceItem['company_id'] = $invoice->company_id;
             $invoiceItem['exchange_rate'] = $exchange_rate;
-            $invoiceItem['base_price'] = $invoiceItem['price'] * $exchange_rate;
-            $invoiceItem['base_discount_val'] = $invoiceItem['discount_val'] * $exchange_rate;
-            $invoiceItem['base_tax'] = $invoiceItem['tax'] * $exchange_rate;
-            $invoiceItem['base_total'] = $invoiceItem['total'] * $exchange_rate;
+            $invoiceItem['base_price'] = $invoiceItem['price'] ;
+            $invoiceItem['base_discount_val'] = $invoiceItem['discount_val'];
+            $invoiceItem['base_tax'] = $invoiceItem['tax'];
+            $invoiceItem['base_total'] = $invoiceItem['total'] ;
 
             if (array_key_exists('recurring_invoice_id', $invoiceItem)) {
                 unset($invoiceItem['recurring_invoice_id']);
@@ -500,7 +505,7 @@ class Invoice extends Model implements HasMedia
                 foreach ($invoiceItem['taxes'] as $tax) {
                     $tax['company_id'] = $invoice->company_id;
                     $tax['exchange_rate'] = $invoice->exchange_rate;
-                    $tax['base_amount'] = $tax['amount'] * $exchange_rate;
+                    $tax['base_amount'] = $tax['amount'];
                     $tax['currency_id'] = $invoice->currency_id;
 
                     if (gettype($tax['amount']) !== "NULL") {
@@ -526,7 +531,7 @@ class Invoice extends Model implements HasMedia
         foreach ($taxes as $tax) {
             $tax['company_id'] = $invoice->company_id;
             $tax['exchange_rate'] = $invoice->exchange_rate;
-            $tax['base_amount'] = $tax['amount'] * $exchange_rate;
+            $tax['base_amount'] = $tax['amount'];
             $tax['currency_id'] = $invoice->currency_id;
 
             if (gettype($tax['amount']) !== "NULL") {

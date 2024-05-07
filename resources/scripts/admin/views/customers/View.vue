@@ -11,7 +11,7 @@
             variant="primary-outline"
             :content-loading="isLoading"
           >
-            {{ $t('general.edit') }}
+            {{ 'Edit' }}
           </BaseButton>
         </router-link>
 
@@ -26,7 +26,7 @@
               variant="primary"
               :content-loading="isLoading"
             >
-              {{ $t('customers.new_transaction') }}
+              {{ 'New Transaction' }}
             </BaseButton>
           </template>
 
@@ -36,7 +36,7 @@
           >
             <BaseDropdownItem class="">
               <BaseIcon name="DocumentIcon" class="mr-3 text-gray-600" />
-              {{ $t('estimates.new_estimate') }}
+              {{ 'New Estimate' }}
             </BaseDropdownItem>
           </router-link>
 
@@ -46,7 +46,7 @@
           >
             <BaseDropdownItem>
               <BaseIcon name="DocumentTextIcon" class="mr-3 text-gray-600" />
-              {{ $t('invoices.new_invoice') }}
+              {{ 'New Invoice' }}
             </BaseDropdownItem>
           </router-link>
 
@@ -56,7 +56,7 @@
           >
             <BaseDropdownItem>
               <BaseIcon name="CreditCardIcon" class="mr-3 text-gray-600" />
-              {{ $t('payments.new_payment') }}
+              {{ 'New Payment' }}
             </BaseDropdownItem>
           </router-link>
 
@@ -66,7 +66,7 @@
           >
             <BaseDropdownItem>
               <BaseIcon name="CalculatorIcon" class="mr-3 text-gray-600" />
-              {{ $t('expenses.new_expense') }}
+              {{ 'New Expense' }}
             </BaseDropdownItem>
           </router-link>
         </BaseDropdown>

@@ -8,7 +8,10 @@ import utils from '@/scripts/helpers/utilities'
 export const useExpenseStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
-
+  axios.interceptors.request.use((config) => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+    return config;
+  });
   return defineStoreFunc({
     id: 'expense',
 
@@ -127,7 +130,7 @@ export const useExpenseStore = (useWindow = false) => {
         formData.append('is_attachment_receipt_removed', isAttachmentReceiptRemoved)
 
         return new Promise((resolve) => {
-          axios.post(`/api/v1/expenses/${id}`, formData).then((response) => {
+          window.axios.post(`/api/v1/expenses/${id}`, formData).then((response) => {
             let pos = this.expenses.findIndex(
               (expense) => expense.id === response.data.id
             )

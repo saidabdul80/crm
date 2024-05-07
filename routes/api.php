@@ -28,6 +28,7 @@ use Crater\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
 use Crater\Http\Controllers\V1\Admin\Expense\UploadReceiptController;
 use Crater\Http\Controllers\V1\Admin\General\BootstrapController;
 use Crater\Http\Controllers\V1\Admin\General\BulkExchangeRateController;
+use Crater\Http\Controllers\V1\Admin\General\CompanyAccountController;
 use Crater\Http\Controllers\V1\Admin\General\ConfigController;
 use Crater\Http\Controllers\V1\Admin\General\CountriesController;
 use Crater\Http\Controllers\V1\Admin\General\CurrenciesController;
@@ -230,6 +231,8 @@ Route::prefix('/v1')->group(function () {
             Route::get('/config', ConfigController::class);
 
             Route::get('/currencies', CurrenciesController::class);
+            Route::get('/accounts', [CompanyAccountController::class, 'index']);
+            Route::post('/account/save', [CompanyAccountController::class, 'save']);
 
             Route::get('/timezones', TimezonesController::class);
 

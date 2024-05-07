@@ -6,7 +6,10 @@ import { handleError } from '@/scripts/helpers/error-handling'
 export const useUserStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
-
+  axios.interceptors.request.use((config) => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('auth.token')}`;
+    return config;
+  });
   return defineStoreFunc({
     id: 'user',
 

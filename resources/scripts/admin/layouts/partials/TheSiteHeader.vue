@@ -13,8 +13,8 @@
       py-3
       md:h-16 md:px-8
       bg-gradient-to-r
-      from-primary-500
-      to-primary-400
+      from-gray-900
+      to-gray-500
     "
   >
     <router-link
@@ -33,8 +33,10 @@
         md:block
       "
     >
-      <img v-if="adminLogo" :src="adminLogo" class="h-6" />
-      <MainLogo v-else class="h-6" light-color="white" dark-color="white" />
+    <img src="@/scripts/assets/img/cowris-logo-black.png" class="h-6" />
+    <!--
+        <img v-if="adminLogo" :src="adminLogo" class="h-6" />
+      <MainLogo v-else class="h-6" light-color="white" dark-color="white" /> -->
     </router-link>
 
     <!-- toggle button-->
@@ -205,8 +207,8 @@ const adminLogo = computed(() => {
 })
 
 function getDefaultAvatar() {
-  const imgUrl = new URL('/img/default-avatar.jpg', import.meta.url)
-  return imgUrl
+ // const imgUrl = new URL('/img/default-avatar.jpg', import.meta.url)
+  return 'imgUrl'
 }
 
 function hasCreateAbilities() {

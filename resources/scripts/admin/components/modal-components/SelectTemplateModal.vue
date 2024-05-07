@@ -19,7 +19,7 @@
           v-for="(template, index) in modalStore.data.templates"
           :key="index"
           :class="{
-            'border border-solid border-primary-500':
+            'border border-solid border-gray-500':
               selectedTemplate === template.name,
           }"
           class="
@@ -28,7 +28,7 @@
             m-2
             border border-gray-200 border-solid
             cursor-pointer
-            hover:border-primary-300
+            hover:border-gray-300
           "
           @click="selectedTemplate = template.name"
         >
@@ -48,7 +48,7 @@
             :class="[
               'w-full p-1 bg-gray-200 text-sm text-center absolute bottom-0 left-0',
               {
-                'text-primary-500 bg-primary-100':
+                'text-primary-500 bg-gray-100':
                   selectedTemplate === template.name,
                 'text-gray-600': selectedTemplate != template.name,
               },
@@ -133,8 +133,8 @@ async function chooseTemplate() {
 }
 
 function getTickImage() {
-  const imgUrl = new URL('/img/tick.png', import.meta.url)
-  return imgUrl
+ // const imgUrl = new URL('/img /tick.png', import.meta.url)
+  return 'imgUrl'
 }
 
 function closeModal() {

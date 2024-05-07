@@ -2,7 +2,7 @@ import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
-
+import Ls from '@/scripts/services/ls.js'
 export const useAuthStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
@@ -22,11 +22,15 @@ export const useAuthStore = (useWindow = false) => {
     actions: {
       login(data) {
         return new Promise((resolve, reject) => {
-          axios.get('/sanctum/csrf-cookie').then((response) => {
+
+          window.axios.get('/sanctum/csrf-cookie').then((response) => {
             if (response) {
+              data._token = response
               axios
                 .post('/login', data)
                 .then((response) => {
+
+                  Ls.set('auth.token', response.data.token)
                   resolve(response)
 
                   setTimeout(() => {
@@ -45,9 +49,11 @@ export const useAuthStore = (useWindow = false) => {
 
       logout() {
         return new Promise((resolve, reject) => {
-          axios
-            .post('/auth/logout')
-            .then((response) => {
+          axios.post('/auth/logout', null, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth.token')}`
+            }
+          }).then((response) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
                 type: 'success',
