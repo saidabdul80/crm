@@ -203,6 +203,27 @@ class Customer extends Authenticatable implements HasMedia
         return $customer;
     }
 
+    private static function prepareData($data){
+
+        $headers = $data[0]; // Get the headers from the first row
+        $result = [];
+
+        // Iterate over the remaining rows
+        for ($i = 1; $i < count($data); $i++) {
+            $row = $data[$i];
+            $rowData = [];
+
+            // Iterate over each cell in the row
+            for ($j = 0; $j < count($row); $j++) {
+                $header = $headers[$j]; // Get the header for this cell
+                $value = $row[$j]; // Get the value of the cell
+                $rowData[$header] = $value; // Assign the value to the corresponding header
+            }
+
+            $result[] = $rowData; // Add the row data to the result array
+        }
+        return $result;
+    }
 
     public static function uploadCustomers($request)
     {
@@ -213,32 +234,43 @@ class Customer extends Authenticatable implements HasMedia
 
             // Read the Excel file and get the data
             $data = Excel::toCollection([], $uploadedFile)[0];
-
+            $data = self::prepareData($data);
+            $currencies = Currency::all();
             foreach ($data as $row) {
+
+                $currency_id = null;
+                if(isset($row['currency'])){
+                    $currency = $row['currency'];
+                    $currency_id = $currencies->where('code',strtoupper($currency))?->id;
+                }
+
                 // Create a new customer instance
-                $customer = new Customer();
-
-                // Assign values to required attributes
-                $customer->name = $row['name'];
-                $customer->email = $row['email'];
-                $customer->phone = $row['phone'];
-
-                // Save the customer
-                $customer->save();
-
+                $customer = Customer::create([
+                    'name' => $row['name'],
+                    'email' => $row['email'],
+                    'phone' => $row['phone'],
+                    'company_id'=>request()->header('company'),
+                    'creator_id'=> $request->user()?->id,
+                    'currency_id'=>$currency_id
+                ]);
                 // Handle custom fields
                 // You need to adjust this part based on how your custom fields are structured in the Excel file
                 foreach ($row as $key => $value) {
                     // Check if the key corresponds to a custom field
                     $customField = CustomField::where('slug', $key)->first();
-                    if ($customField) {
-                        // Save the custom field value
-                        $customer->customFields()->attach($customField->id, ['value' => $value]);
+                    if (!empty($customField)) {
+                        // Update the custom field value for the customer
+                        $customer->updateCustomFields([
+                            [
+                                'id' => $customField->id,
+                                'value' => $value
+                            ]
+                        ]);
                     }
                 }
             }
 
-            return response()->json(['message' => 'Customers uploaded successfully'], 200);
+            return 'Customers uploaded successfully';
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

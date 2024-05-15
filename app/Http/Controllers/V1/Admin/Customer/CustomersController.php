@@ -124,4 +124,21 @@ class CustomersController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function import(Request $request){
+
+        try{
+
+            $request->validate([
+                "file"=>"required"
+            ]);
+
+            Customer::uploadCustomers($request);
+        }catch(\Illuminate\Validation\ValidationException $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+    }
 }

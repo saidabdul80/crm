@@ -2,8 +2,10 @@
 namespace Crater\Http\Controllers\V1\Admin\Auth;
 
 use Crater\Http\Controllers\Controller;
+use Crater\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -36,5 +38,9 @@ class LoginController extends Controller
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
+    }
+
+    public function requestAccess(){
+        /* $user = User::first(); */
     }
 }

@@ -33,8 +33,8 @@
       }}
     </span> -->
   </BaseInputGroup>
+  <!-- v-if="store.showExchangeRate && selectedCurrency" -->
   <BaseInputGroup
-    v-if="store.showExchangeRate && selectedCurrency"
     :content-loading="isFetching && !isEdit"
     :label="$t('settings.exchange_rate.exchange_rate')"
     :error="v.exchange_rate.$error && v.exchange_rate.$errors[0].$message"
@@ -57,13 +57,18 @@
     <BaseInput
       v-model="store[storeProp].exchange_rate"
       :content-loading="isFetching && !isEdit"
-      :addon="`1 ${selectedCurrency?.code} =`"
+      :addon="`1 ${currencyStack.first} =`"
       :disabled="isFetching"
       @input="v.exchange_rate.$touch()"
     >
       <template #right>
-        <span class="text-gray-500 sm:text-sm">
-          {{ store[storeProp].paying_currency?.code }}
+        <span class="flex items-center">
+          <span class="text-gray-500 sm:text-sm mr-2">
+            {{ currencyStack.second}}
+          </span>
+          <button class="bg-white p-1 rounded-md  active:animate-ping" @click="flipCurrency(true)" type="button">
+            <svg fill="#444" height="18px" width="18px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 214.367 214.367" xml:space="preserve" stroke="#000000" stroke-width="0.00214367"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.42873399999999995"></g><g id="SVGRepo_iconCarrier"> <path d="M202.403,95.22c0,46.312-33.237,85.002-77.109,93.484v25.663l-69.76-40l69.76-40v23.494 c27.176-7.87,47.109-32.964,47.109-62.642c0-35.962-29.258-65.22-65.22-65.22s-65.22,29.258-65.22,65.22 c0,9.686,2.068,19.001,6.148,27.688l-27.154,12.754c-5.968-12.707-8.994-26.313-8.994-40.441C11.964,42.716,54.68,0,107.184,0 S202.403,42.716,202.403,95.22z"></path> </g></svg>
+          </button>
         </span>
       </template>
     </BaseInput>
@@ -122,21 +127,28 @@ const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 const exchangeRateStore = useExchangeRateStore()
 const hasActiveProvider = ref(false)
+
+
+
 let isFetching = ref(false)
+props.store[props.storeProp].fliped = false;
 
 globalStore.fetchAccounts()
-
-
 const companyCurrency = computed(() => {
   return companyStore.selectedCompanyCurrency
 })
-
+const selectedCurrency2 = ref({})
 const selectedCurrency = computed(() => {
-  return globalStore.accounts.find(
+  selectedCurrency2.value = globalStore.accounts.find(
     (c) => c.currency_id === props.store[props.storeProp].currency_id
   )
+  return selectedCurrency2.value;
 })
 
+const currencyStack = ref({
+  first:selectedCurrency2.value?.code,
+  second: props.store[props.storeProp].paying_currency?.code
+})
 const isCurrencyDiffrent = computed(() => {
   return companyCurrency.value.id !== props.customerCurrency
 })
@@ -182,8 +194,21 @@ watch(
   { immediate: true }
 )
 
+function flipCurrency(flip = false){
+  if(flip){
+    props.store[props.storeProp].fliped = !props.store[props.storeProp].fliped
+  }
+  if(props.store[props.storeProp].fliped){
+    currencyStack.value.first = props.store[props.storeProp].paying_currency?.code
+    currencyStack.value.second= selectedCurrency2.value?.code
+  }else{
+    currencyStack.value.first = selectedCurrency.value?.code
+    currencyStack.value.second= props.store[props.storeProp].paying_currency?.code
+  }
+}
 
 function updatePayingCurrency(){
+  flipCurrency()
   props.store[props.storeProp].paying_currency_id = props.store[props.storeProp].paying_currency?.id
 }
 
@@ -201,13 +226,14 @@ function checkForActiveProvider() {
 
 function setCustomerCurrency(v) {
   if (v) {
-    props.store[props.storeProp].currency_id = v.currency.id
+    props.store[props.storeProp].currency_id = v.currency?.id
   } else {
-    props.store[props.storeProp].currency_id = companyCurrency.value.id
+    props.store[props.storeProp].currency_id = companyCurrency.value?.id
   }
 }
 
 async function onChangeCurrency(v) {
+  flipCurrency()
   if (v !== companyCurrency.value.id) {
     if (!props.isEdit && v) {
       await getCurrenctExchangeRate(v)

@@ -430,14 +430,14 @@
     "item": {
       "title": "Item Title",
       "description": "Description",
-      "quantity": "Quantity",
-      "price": "Price",
+      "quantity": "Recipient Amount Receivable",
+      "price": "Exchange Rate",
       "discount": "Discount",
       "total": "Total",
       "total_discount": "Total Discount",
       "sub_total": "Sub Total",
       "tax": "Tax",
-      "amount": "Amount",
+      "amount": "Recipient Amount Payable",
       "select_an_item": "Type or click to select an item",
       "type_item_description": "Type Item Description (optional)"
     },

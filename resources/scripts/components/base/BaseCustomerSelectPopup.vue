@@ -63,7 +63,7 @@
             @click="resetSelectedCustomer"
           >
             <BaseIcon name="XCircleIcon" class="text-gray-500 h-4 w-4 mr-1" />
-            {{ $t('general.deselect') }}
+            <!-- {{ $t('general.deselect') }} --> Change Customer
           </a>
         </div>
       </div>
@@ -235,7 +235,7 @@
         leave-from-class="translate-y-0 opacity-100"
         leave-to-class="translate-y-1 opacity-0"
       >
-        <div v-if="open" class="absolute min-w-full z-10">
+        <div class="absolute min-w-full z-10">
           <PopoverPanel
             v-slot="{ close }"
             focus
@@ -444,6 +444,7 @@ const selectedCustomer = computed(() => {
 })
 
 function resetSelectedCustomer() {
+  open.value = true;
   if (props.type === 'estimate') {
     estimateStore.resetSelectedCustomer()
   } else if (props.type === 'invoice') {

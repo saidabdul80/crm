@@ -93,7 +93,6 @@ export const useCustomerStore = (useWindow = false) => {
       },
 
       downloadTemplate(params) {
-        alert()
         return new Promise((resolve, reject) => {
           axios
             .get('/api/v1/customers/download_template', {
@@ -126,6 +125,7 @@ export const useCustomerStore = (useWindow = false) => {
             });
         });
       },
+
       fetchViewCustomer(params) {
         return new Promise((resolve, reject) => {
           this.isFetchingViewData = true
@@ -185,7 +185,36 @@ export const useCustomerStore = (useWindow = false) => {
             })
         })
       },
+      uploadCustomer(file) {
+        return new Promise((resolve, reject) => {
+          const formData = new FormData();
+          formData.append('file', file);
 
+          this.isFetchingViewData = true;
+
+          axios
+            .post('/api/v1/customers/import', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+            .then(response => {
+              this.customers.push(response.data.data);
+              const notificationStore = useNotificationStore();
+              notificationStore.showNotification({
+                type: 'success',
+                message: 'Customers uploaded successfully'
+              });
+
+              this.isFetchingViewData = false;
+              resolve(response);
+            })
+            .catch(err => {
+              handleError(err);
+              reject(err);
+            });
+        });
+      },
       updateCustomer(data) {
         return new Promise((resolve, reject) => {
           axios

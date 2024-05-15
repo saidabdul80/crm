@@ -210,7 +210,7 @@
       </BaseTable>
     </div>
   </BasePage>
-  <ImportCustomerModal />
+  <ImportCustomerModal @uploaded="refreshTable" />
 </template>
 
 <script setup>

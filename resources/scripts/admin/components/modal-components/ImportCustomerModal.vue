@@ -40,15 +40,15 @@
           {{ $t('general.cancel') }}
         </BaseButton>
         <BaseButton
-          :loading="isSaving.value"
-          :disabled="isSaving.value"
+          :loading="isSaving"
+          :disabled="isSaving"
           variant="primary"
           type="submit"
         >
           <template #left="{ classname }">
             <BaseIcon name="SaveIcon" :class="classname" />
           </template>
-          {{ customerStore.isEdit ? $t('general.update') : $t('general.save') }}
+        Upload
         </BaseButton>
       </div>
     </form>
@@ -63,7 +63,7 @@ import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, helpers } from '@vuelidate/validators'
-
+const emit = defineEmits(['uploaded'])
 const modalStore = useModalStore()
 const customerStore = useCustomerStore()
 const notificationStore = useNotificationStore()
@@ -103,16 +103,19 @@ async function downloadTemplate(){
   await customerStore.downloadTemplate()
 }
 
-function submitNote() {
-  if (v$.value.$invalid) {
-    return
-  }
+async function submitNote() {
+  isSaving.value = true
+  await customerStore.uploadCustomer(file.value)
+  isSaving.value = false
+  emit('uploaded',true)
+  modalStore.active = false
   // Handle form submission logic here
 }
 
 function handleFileUpload(event) {
   const uploadedFile = event.target.files[0]
   file.value = uploadedFile
+
 }
 </script>
 

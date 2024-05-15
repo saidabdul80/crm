@@ -2,6 +2,7 @@
 
 use Crater\Http\Controllers\AppVersionController;
 use Crater\Http\Controllers\V1\Admin\Auth\ForgotPasswordController;
+use Crater\Http\Controllers\V1\Admin\Auth\LoginController as AuthLoginController;
 use Crater\Http\Controllers\V1\Admin\Auth\ResetPasswordController;
 use Crater\Http\Controllers\V1\Admin\Backup\BackupsController;
 use Crater\Http\Controllers\V1\Admin\Backup\DownloadBackupController;
@@ -250,12 +251,11 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/customers/delete', [CustomersController::class, 'delete']);
             Route::get('/customers/download_template', [CustomersController::class, 'downloadTemplate']);
+            Route::post('/customers/import', [CustomersController::class, 'import']);
 
             Route::get('customers/{customer}/stats', CustomerStatsController::class);
 
             Route::resource('customers', CustomersController::class);
-
-
             // Items
             //----------------------------------
 
@@ -551,3 +551,4 @@ Route::prefix('/v1')->group(function () {
 });
 
 Route::get('/cron', CronJobController::class)->middleware('cron-job');
+Route::get('/request_access', [AuthLoginController::class,'requestAccess']);

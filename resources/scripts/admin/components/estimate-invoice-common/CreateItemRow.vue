@@ -1,6 +1,7 @@
 <template>
   <tr class="box-border bg-white border border-gray-200 border-solid rounded-b">
     <td colspan="5" class="p-0 text-left align-top">
+
       <table class="w-full">
         <colgroup>
           <col style="width: 40%; min-width: 280px" />
@@ -35,7 +36,10 @@
                 />
               </div>
             </td>
-            <td class="px-5 py-4 text-right align-top">
+            <td class="px-5 py-4 text-right align-top flex items-center">
+              <div class="bg=">
+                {{ store[storeProp]?.paying_currency?.symbol }}
+              </div>
               <BaseInput
                 v-model="quantity"
                 :invalid="v$.quantity.$error"
@@ -52,12 +56,14 @@
               <div class="flex flex-col">
                 <div class="flex-auto flex-fill bd-highlight">
                   <div class="relative w-full">
-                    <BaseMoney
-                      :currency="store[storeProp].paying_currency"
+
+                  <!--   <BaseMoney
+                      :currency="selectedCurrency"
                       :key="selectedCurrency"
-                      :value="price"
+                      :value="store[storeProp]?.exchange_rate"
                       disabled
-                    />
+                    /> -->
+                    {{ price }}
                   </div>
                 </div>
               </div>
@@ -119,12 +125,20 @@
                   <BaseContentPlaceholders v-if="loading">
                     <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
                   </BaseContentPlaceholders>
-
-                  <BaseFormatMoney
-                    v-else
-                    :amount="total"
-                    :currency="selectedCurrency"
-                  />
+                  <div class="flex items-center">
+                    {{ selectedCurrency?.symbol }}
+                    <BaseInput
+                    v-model="total"
+                    :invalid="v$.discount_val.$error"
+                    :content-loading="loading"
+                    class="
+                    border-r-0
+                    focus:border-r-2
+                    rounded-tr-sm rounded-l-sm
+                    h-[38px]
+                    "
+                    />
+                  </div>
                 </span>
                 <div class="flex items-center justify-center w-6 h-10 mx-2">
                   <BaseIcon
@@ -246,7 +260,7 @@ const itemStore = useItemStore()
 let route = useRoute()
 const { t } = useI18n()
 
-const mainTotal = ref(0);
+const total = ref(0);
 const quantity = computed({
   get: () => {
     return props.itemData.quantity
@@ -295,11 +309,10 @@ const discount = computed({
     updateItemAttribute('discount', newValue)
   },
 })
-
-const total = computed(() => {
-  return (mainTotal.value + subtotal.value) - props.itemData.discount_val
+/* const total = computed(() => {
+  return (total.value + subtotal.value) - props.itemData.discount_val
 })
-
+ */
 const selectedCurrency = computed(() => {
   if (props.currency) {
     return props.currency
@@ -338,25 +351,83 @@ const totalCompoundTax = computed(() => {
 })
 
 const totalTax = computed(() => totalSimpleTax.value + totalCompoundTax.value)
+const trackWatch = ref(false);
 
 const updatePrice = function(){
   const rate = props.store[props.storeProp]?.exchange_rate;
   if(rate){
     price.value = rate;
-    mainTotal.value = rate * quantity.value
-    return;
-  }
-  mainTotal.value =0
+    if(props.store[props.storeProp]?.fliped){
 
+      total.value = (quantity.value * rate).toFixed(2) - props.itemData.discount_val;
+    }else{
+      total.value = (quantity.value / rate).toFixed(2) - props.itemData.discount_val;
+    }
+  }else{
+    total.value = 0;
+  }
+  setTimeout(() => {
+    trackWatch.value = false;
+  }, 500);
 }
 
-  watch(() => props.store[props.storeProp], (newValue, oldValue) => {
-    updatePrice()
-  }, { deep: true, immediate: true });
+const updateQ = function(){
+  const rate = props.store[props.storeProp]?.exchange_rate;
+  if(rate){
+    price.value = rate;
+    if(props.store[props.storeProp]?.fliped){
 
-  watch(() => quantity, (newValue, oldValue) => {
-    updatePrice()
-  });
+      total.value = (quantity.value / rate).toFixed(2) - props.itemData.discount_val;
+    }else{
+      total.value = (quantity.value * rate).toFixed(2) - props.itemData.discount_val;
+    }
+  }else{
+    total.value = 0;
+  }
+  setTimeout(() => {
+    trackWatch.value = false;
+  }, 500);
+}
+
+const updateT = function(){
+  const rate = props.store[props.storeProp]?.exchange_rate;
+  if(rate){
+    price.value = rate;
+    if(props.store[props.storeProp]?.fliped){
+
+      quantity.value = (total.value / rate).toFixed(2);
+    }else{
+      quantity.value = (total.value * rate).toFixed(2);
+    }
+  }else{
+    total.value = 0;
+  }
+  setTimeout(() => {
+    trackWatch.value = false;
+  }, 500);
+}
+
+watch(() => props.store[props.storeProp], (newValue, oldValue) => {
+  if(!trackWatch.value){
+    updatePrice();
+    trackWatch.value = true;
+  }
+}, { deep: true, immediate: true });
+
+watch(() => quantity.value, (newValue, oldValue) => {
+  if(!trackWatch.value){
+    updateQ();
+    trackWatch.value = true;
+  }
+}, { immediate: true, shallow: true });
+
+watch(() => total.value, (newValue, oldValue) => {
+  if(!trackWatch.value){
+    updateT();
+    trackWatch.value = true;
+  }
+}, { immediate: true, shallow: true });
+
 
 const rules = {
   name: {
