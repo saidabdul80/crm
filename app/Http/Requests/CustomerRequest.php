@@ -133,6 +133,9 @@ class CustomerRequest extends FormRequest
             ->only([
                 'name',
                 'email',
+                'first_name',
+                'last_name',
+                'gender',
                 'currency_id',
                 'password',
                 'phone',

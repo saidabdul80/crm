@@ -246,8 +246,11 @@ class Customer extends Authenticatable implements HasMedia
 
                 // Create a new customer instance
                 $customer = Customer::create([
-                    'name' => $row['name'],
+                    'name' => $row['first_name'].' '.$row['last_name'],
                     'email' => $row['email'],
+                    'first_name' => $row['first_name'] ?? '',
+                    'last_name' => $row['last_name'] ?? '',
+                    'gender' => $row['gender'] ?? '',
                     'phone' => $row['phone'],
                     'company_id'=>request()->header('company'),
                     'creator_id'=> $request->user()?->id,

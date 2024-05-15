@@ -37,7 +37,8 @@
           </h6>
 
           <BaseInputGrid class="col-span-5 lg:col-span-4">
-            <BaseInputGroup
+          <!--   <BaseInputGroup
+            v-show="false"
               :label="$t('customers.display_name')"
               required
               :error="
@@ -55,9 +56,50 @@
                 :invalid="v$.currentCustomer.name.$error"
                 @input="v$.currentCustomer.name.$touch()"
               />
-            </BaseInputGroup>
+            </BaseInputGroup> -->
 
             <BaseInputGroup
+              label="First Name"
+              required
+              :error="
+                v$.currentCustomer.first_name.$error &&
+                v$.currentCustomer.first_name.$errors[0].$message
+              "
+              :content-loading="isFetchingInitialData"
+            >
+              <BaseInput
+                v-model="customerStore.currentCustomer.first_name"
+                :content-loading="isFetchingInitialData"
+                type="text"
+                name="first_name"
+                class=""
+                :invalid="v$.currentCustomer.first_name.$error"
+                @input="v$.currentCustomer.first_name.$touch()"
+              />
+            </BaseInputGroup>
+            <span style="display: none;">{{ display_name }}</span>
+            <BaseInputGroup
+              label="Last Name"
+              required
+              :error="
+                v$.currentCustomer.last_name.$error &&
+                v$.currentCustomer.last_name.$errors[0].$message
+              "
+              :content-loading="isFetchingInitialData"
+            >
+
+              <BaseInput
+                v-model="customerStore.currentCustomer.last_name"
+                :content-loading="isFetchingInitialData"
+                type="text"
+                name="last_name"
+                class=""
+                :invalid="v$.currentCustomer.last_name.$error"
+                @input="v$.currentCustomer.last_name.$touch()"
+              />
+            </BaseInputGroup>
+
+           <!--  <BaseInputGroup
               :label="$t('customers.primary_contact_name')"
               :content-loading="isFetchingInitialData"
             >
@@ -66,7 +108,7 @@
                 :content-loading="isFetchingInitialData"
                 type="text"
               />
-            </BaseInputGroup>
+            </BaseInputGroup> -->
 
             <BaseInputGroup
               :error="
@@ -124,22 +166,22 @@
             </BaseInputGroup>
 
             <BaseInputGroup
-              :error="
-                v$.currentCustomer.website.$error &&
-                v$.currentCustomer.website.$errors[0].$message
-              "
-              :label="$t('customers.website')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseInput
-                v-model="customerStore.currentCustomer.website"
+               label="Gender"
+              :content-loading="isFetchingInitialData">
+
+              <BaseSelectInput
+                v-model="customerStore.currentCustomer.gender"
+                value-prop="id"
+                track-by="gender"
                 :content-loading="isFetchingInitialData"
-                type="url"
-                @input="v$.currentCustomer.website.$touch()"
-              />
+                :options="['Male','Female']"
+                :can-deselect="false"
+                placeholder="gender"
+                class="w-full">
+              </BaseSelectInput>
             </BaseInputGroup>
 
-            <BaseInputGroup
+          <!--   <BaseInputGroup
               :label="$t('customers.prefix')"
               :error="
                 v$.currentCustomer.prefix.$error &&
@@ -156,7 +198,7 @@
                 :invalid="v$.currentCustomer.prefix.$error"
                 @input="v$.currentCustomer.prefix.$touch()"
               />
-            </BaseInputGroup>
+            </BaseInputGroup> -->
           </BaseInputGrid>
         </div>
 
@@ -262,144 +304,151 @@
         <BaseDivider class="mb-5 md:mb-8" />
 
         <!-- Billing Address   -->
-        <div class="grid grid-cols-5 gap-4 mb-8">
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
-            {{ $t('customers.billing_address') }}
-          </h6>
-
-          <BaseInputGrid
-            v-if="customerStore.currentCustomer.billing"
-            class="col-span-5 lg:col-span-4"
-          >
-            <BaseInputGroup
-              :label="$t('customers.name')"
-              :content-loading="isFetchingInitialData"
+        <Disclosure v-slot="{ open }">
+          <DisclosureButton
+              class="flex w-full justify-between items-center rounded-lg bg-gray-100 px-4 py-2 text-left text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-gray-500/75"
             >
-              <BaseInput
-                v-model.trim="customerStore.currentCustomer.billing.name"
-                :content-loading="isFetchingInitialData"
-                type="text"
-                class="w-full"
-                name="address_name"
-              />
-            </BaseInputGroup>
+              <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+                  {{ $t('customers.billing_address') }}
+                </h6>
+                <div   :class="open ? 'rotate-180 transform' : ''">
+                  <svg height="16px" width="16px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 185.343 185.343" xml:space="preserve" fill="#000000" transform="rotate(90)" stroke="#000000" stroke-width="7.599062999999999"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path style="fill:#010002;" d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175 l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934 c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z"></path> </g> </g> </g></svg>
+                </div>
+            </DisclosureButton>
+            <DisclosurePanel>
+              <div class="grid grid-cols-5 gap-4 px-4 mt-5 mb-8">
+                <BaseInputGrid
+                  v-if="customerStore.currentCustomer.billing"
+                  class="col-span-5 lg:col-span-4"
+                >
+                  <BaseInputGroup
+                    :label="$t('customers.name')"
+                    :content-loading="isFetchingInitialData"
+                  >
+                    <BaseInput
+                      v-model.trim="customerStore.currentCustomer.billing.name"
+                      :content-loading="isFetchingInitialData"
+                      type="text"
+                      class="w-full"
+                      name="address_name"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :label="$t('customers.country')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseMultiselect
-                v-model="customerStore.currentCustomer.billing.country_id"
-                value-prop="id"
-                label="name"
-                track-by="name"
-                resolve-on-load
-                searchable
-                :content-loading="isFetchingInitialData"
-                :options="globalStore.countries"
-                :placeholder="$t('general.select_country')"
-                class="w-full"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :label="$t('customers.country')"
+                    :content-loading="isFetchingInitialData"
+                  >
+                    <BaseMultiselect
+                      v-model="customerStore.currentCustomer.billing.country_id"
+                      value-prop="id"
+                      label="name"
+                      track-by="name"
+                      resolve-on-load
+                      searchable
+                      :content-loading="isFetchingInitialData"
+                      :options="globalStore.countries"
+                      :placeholder="$t('general.select_country')"
+                      class="w-full"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :label="$t('customers.state')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseInput
-                v-model="customerStore.currentCustomer.billing.state"
-                :content-loading="isFetchingInitialData"
-                name="billing.state"
-                type="text"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :label="$t('customers.state')"
+                    :content-loading="isFetchingInitialData"
+                  >
+                    <BaseInput
+                      v-model="customerStore.currentCustomer.billing.state"
+                      :content-loading="isFetchingInitialData"
+                      name="billing.state"
+                      type="text"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :content-loading="isFetchingInitialData"
-              :label="$t('customers.city')"
-            >
-              <BaseInput
-                v-model="customerStore.currentCustomer.billing.city"
-                :content-loading="isFetchingInitialData"
-                name="billing.city"
-                type="text"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :content-loading="isFetchingInitialData"
+                    :label="$t('customers.city')"
+                  >
+                    <BaseInput
+                      v-model="customerStore.currentCustomer.billing.city"
+                      :content-loading="isFetchingInitialData"
+                      name="billing.city"
+                      type="text"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :label="$t('customers.address')"
-              :error="
-                (v$.currentCustomer.billing.address_street_1.$error &&
-                  v$.currentCustomer.billing.address_street_1.$errors[0]
-                    .$message) ||
-                (v$.currentCustomer.billing.address_street_2.$error &&
-                  v$.currentCustomer.billing.address_street_2.$errors[0]
-                    .$message)
-              "
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseTextarea
-                v-model.trim="
-                  customerStore.currentCustomer.billing.address_street_1
-                "
-                :content-loading="isFetchingInitialData"
-                :placeholder="$t('general.street_1')"
-                type="text"
-                name="billing_street1"
-                :container-class="`mt-3`"
-                @input="v$.currentCustomer.billing.address_street_1.$touch()"
-              />
+                  <BaseInputGroup
+                    :label="$t('customers.address')"
+                    :error="
+                      (v$.currentCustomer.billing.address_street_1.$error &&
+                        v$.currentCustomer.billing.address_street_1.$errors[0]
+                          .$message) ||
+                      (v$.currentCustomer.billing.address_street_2.$error &&
+                        v$.currentCustomer.billing.address_street_2.$errors[0]
+                          .$message)
+                    "
+                    :content-loading="isFetchingInitialData"
+                  >
+                    <BaseTextarea
+                      v-model.trim="
+                        customerStore.currentCustomer.billing.address_street_1
+                      "
+                      :content-loading="isFetchingInitialData"
+                      :placeholder="$t('general.street_1')"
+                      type="text"
+                      name="billing_street1"
+                      :container-class="`mt-3`"
+                      @input="v$.currentCustomer.billing.address_street_1.$touch()"
+                    />
 
-              <BaseTextarea
-                v-model.trim="
-                  customerStore.currentCustomer.billing.address_street_2
-                "
-                :content-loading="isFetchingInitialData"
-                :placeholder="$t('general.street_2')"
-                type="text"
-                class="mt-3"
-                name="billing_street2"
-                :container-class="`mt-3`"
-                @input="v$.currentCustomer.billing.address_street_2.$touch()"
-              />
-            </BaseInputGroup>
+                    <BaseTextarea
+                      v-model.trim="
+                        customerStore.currentCustomer.billing.address_street_2
+                      "
+                      :content-loading="isFetchingInitialData"
+                      :placeholder="$t('general.street_2')"
+                      type="text"
+                      class="mt-3"
+                      name="billing_street2"
+                      :container-class="`mt-3`"
+                      @input="v$.currentCustomer.billing.address_street_2.$touch()"
+                    />
+                  </BaseInputGroup>
 
-            <div class="space-y-6">
-              <BaseInputGroup
-                :content-loading="isFetchingInitialData"
-                :label="$t('customers.phone')"
-                class="text-left"
-              >
-                <BaseInput
-                  v-model.trim="customerStore.currentCustomer.billing.phone"
-                  :content-loading="isFetchingInitialData"
-                  type="text"
-                  name="phone"
-                />
-              </BaseInputGroup>
+                  <div class="space-y-6">
+                    <BaseInputGroup
+                      :content-loading="isFetchingInitialData"
+                      :label="$t('customers.phone')"
+                      class="text-left"
+                    >
+                      <BaseInput
+                        v-model.trim="customerStore.currentCustomer.billing.phone"
+                        :content-loading="isFetchingInitialData"
+                        type="text"
+                        name="phone"
+                      />
+                    </BaseInputGroup>
 
-              <BaseInputGroup
-                :label="$t('customers.zip_code')"
-                :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
-              >
-                <BaseInput
-                  v-model.trim="customerStore.currentCustomer.billing.zip"
-                  :content-loading="isFetchingInitialData"
-                  type="text"
-                  name="zip"
-                />
-              </BaseInputGroup>
-            </div>
-          </BaseInputGrid>
-        </div>
-
+                    <BaseInputGroup
+                      :label="$t('customers.zip_code')"
+                      :content-loading="isFetchingInitialData"
+                      class="mt-2 text-left"
+                    >
+                      <BaseInput
+                        v-model.trim="customerStore.currentCustomer.billing.zip"
+                        :content-loading="isFetchingInitialData"
+                        type="text"
+                        name="zip"
+                      />
+                    </BaseInputGroup>
+                  </div>
+                </BaseInputGrid>
+              </div>
+            </DisclosurePanel>
+        </Disclosure>
         <BaseDivider class="mb-5 md:mb-8" />
 
         <!-- Billing Address Copy Button  -->
-        <div
-          class="flex items-center justify-start mb-6 md:justify-end md:mb-0"
-        >
+        <div class="flex items-center justify-start mb-6 md:justify-end md:mb-0">
           <div class="p-1">
             <BaseButton
               type="button"
@@ -420,135 +469,142 @@
         </div>
 
         <!-- Shipping Address  -->
-        <div
-          v-if="customerStore.currentCustomer.shipping"
-          class="grid grid-cols-5 gap-4 mb-8"
-        >
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+        <Disclosure v-slot="{ open }">
+          <DisclosureButton
+              class="flex w-full justify-between items-center rounded-lg bg-gray-100 px-4 py-2 text-left text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-gray-500/75"
+            >
+            <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
             {{ $t('customers.shipping_address') }}
           </h6>
+                <div   :class="open ? 'rotate-180 transform' : ''">
+                  <svg height="16px" width="16px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 185.343 185.343" xml:space="preserve" fill="#000000" transform="rotate(90)" stroke="#000000" stroke-width="7.599062999999999"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path style="fill:#010002;" d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175 l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934 c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z"></path> </g> </g> </g></svg>
+                </div>
+            </DisclosureButton>
+            <DisclosurePanel>
+              <div v-if="customerStore.currentCustomer.shipping"  class="grid grid-cols-5 gap-4 px-4 mt-5 mb-8">
+                <BaseInputGrid class="col-span-5 lg:col-span-4">
+                  <BaseInputGroup
+                    :content-loading="isFetchingInitialData"
+                    :label="$t('customers.name')"
+                  >
+                    <BaseInput
+                      v-model.trim="customerStore.currentCustomer.shipping.name"
+                      :content-loading="isFetchingInitialData"
+                      type="text"
+                      name="address_name"
+                    />
+                  </BaseInputGroup>
 
-          <BaseInputGrid class="col-span-5 lg:col-span-4">
-            <BaseInputGroup
-              :content-loading="isFetchingInitialData"
-              :label="$t('customers.name')"
-            >
-              <BaseInput
-                v-model.trim="customerStore.currentCustomer.shipping.name"
-                :content-loading="isFetchingInitialData"
-                type="text"
-                name="address_name"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :label="$t('customers.country')"
+                    :content-loading="isFetchingInitialData"
+                  >
+                    <BaseMultiselect
+                      v-model="customerStore.currentCustomer.shipping.country_id"
+                      value-prop="id"
+                      label="name"
+                      track-by="name"
+                      resolve-on-load
+                      searchable
+                      :content-loading="isFetchingInitialData"
+                      :options="globalStore.countries"
+                      :placeholder="$t('general.select_country')"
+                      class="w-full"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :label="$t('customers.country')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseMultiselect
-                v-model="customerStore.currentCustomer.shipping.country_id"
-                value-prop="id"
-                label="name"
-                track-by="name"
-                resolve-on-load
-                searchable
-                :content-loading="isFetchingInitialData"
-                :options="globalStore.countries"
-                :placeholder="$t('general.select_country')"
-                class="w-full"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :label="$t('customers.state')"
+                    :content-loading="isFetchingInitialData"
+                  >
+                    <BaseInput
+                      v-model="customerStore.currentCustomer.shipping.state"
+                      :content-loading="isFetchingInitialData"
+                      name="shipping.state"
+                      type="text"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :label="$t('customers.state')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseInput
-                v-model="customerStore.currentCustomer.shipping.state"
-                :content-loading="isFetchingInitialData"
-                name="shipping.state"
-                type="text"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :content-loading="isFetchingInitialData"
+                    :label="$t('customers.city')"
+                  >
+                    <BaseInput
+                      v-model="customerStore.currentCustomer.shipping.city"
+                      :content-loading="isFetchingInitialData"
+                      name="shipping.city"
+                      type="text"
+                    />
+                  </BaseInputGroup>
 
-            <BaseInputGroup
-              :content-loading="isFetchingInitialData"
-              :label="$t('customers.city')"
-            >
-              <BaseInput
-                v-model="customerStore.currentCustomer.shipping.city"
-                :content-loading="isFetchingInitialData"
-                name="shipping.city"
-                type="text"
-              />
-            </BaseInputGroup>
+                  <BaseInputGroup
+                    :label="$t('customers.address')"
+                    :content-loading="isFetchingInitialData"
+                    :error="
+                      (v$.currentCustomer.shipping.address_street_1.$error &&
+                        v$.currentCustomer.shipping.address_street_1.$errors[0]
+                          .$message) ||
+                      (v$.currentCustomer.shipping.address_street_2.$error &&
+                        v$.currentCustomer.shipping.address_street_2.$errors[0]
+                          .$message)
+                    "
+                  >
+                    <BaseTextarea
+                      v-model.trim="
+                        customerStore.currentCustomer.shipping.address_street_1
+                      "
+                      :content-loading="isFetchingInitialData"
+                      type="text"
+                      :placeholder="$t('general.street_1')"
+                      name="shipping_street1"
+                      @input="v$.currentCustomer.shipping.address_street_1.$touch()"
+                    />
 
-            <BaseInputGroup
-              :label="$t('customers.address')"
-              :content-loading="isFetchingInitialData"
-              :error="
-                (v$.currentCustomer.shipping.address_street_1.$error &&
-                  v$.currentCustomer.shipping.address_street_1.$errors[0]
-                    .$message) ||
-                (v$.currentCustomer.shipping.address_street_2.$error &&
-                  v$.currentCustomer.shipping.address_street_2.$errors[0]
-                    .$message)
-              "
-            >
-              <BaseTextarea
-                v-model.trim="
-                  customerStore.currentCustomer.shipping.address_street_1
-                "
-                :content-loading="isFetchingInitialData"
-                type="text"
-                :placeholder="$t('general.street_1')"
-                name="shipping_street1"
-                @input="v$.currentCustomer.shipping.address_street_1.$touch()"
-              />
+                    <BaseTextarea
+                      v-model.trim="
+                        customerStore.currentCustomer.shipping.address_street_2
+                      "
+                      :content-loading="isFetchingInitialData"
+                      type="text"
+                      :placeholder="$t('general.street_2')"
+                      name="shipping_street2"
+                      class="mt-3"
+                      :container-class="`mt-3`"
+                      @input="v$.currentCustomer.shipping.address_street_2.$touch()"
+                    />
+                  </BaseInputGroup>
 
-              <BaseTextarea
-                v-model.trim="
-                  customerStore.currentCustomer.shipping.address_street_2
-                "
-                :content-loading="isFetchingInitialData"
-                type="text"
-                :placeholder="$t('general.street_2')"
-                name="shipping_street2"
-                class="mt-3"
-                :container-class="`mt-3`"
-                @input="v$.currentCustomer.shipping.address_street_2.$touch()"
-              />
-            </BaseInputGroup>
+                  <div class="space-y-6">
+                    <BaseInputGroup
+                      :content-loading="isFetchingInitialData"
+                      :label="$t('customers.phone')"
+                      class="text-left"
+                    >
+                      <BaseInput
+                        v-model.trim="customerStore.currentCustomer.shipping.phone"
+                        :content-loading="isFetchingInitialData"
+                        type="text"
+                        name="phone"
+                      />
+                    </BaseInputGroup>
 
-            <div class="space-y-6">
-              <BaseInputGroup
-                :content-loading="isFetchingInitialData"
-                :label="$t('customers.phone')"
-                class="text-left"
-              >
-                <BaseInput
-                  v-model.trim="customerStore.currentCustomer.shipping.phone"
-                  :content-loading="isFetchingInitialData"
-                  type="text"
-                  name="phone"
-                />
-              </BaseInputGroup>
-
-              <BaseInputGroup
-                :label="$t('customers.zip_code')"
-                :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
-              >
-                <BaseInput
-                  v-model.trim="customerStore.currentCustomer.shipping.zip"
-                  :content-loading="isFetchingInitialData"
-                  type="text"
-                  name="zip"
-                />
-              </BaseInputGroup>
-            </div>
-          </BaseInputGrid>
-        </div>
+                    <BaseInputGroup
+                      :label="$t('customers.zip_code')"
+                      :content-loading="isFetchingInitialData"
+                      class="mt-2 text-left"
+                    >
+                      <BaseInput
+                        v-model.trim="customerStore.currentCustomer.shipping.zip"
+                        :content-loading="isFetchingInitialData"
+                        type="text"
+                        name="zip"
+                      />
+                    </BaseInputGroup>
+                  </div>
+                </BaseInputGrid>
+              </div>
+            </DisclosurePanel>
+        </Disclosure>
 
         <BaseDivider
           v-if="customFieldStore.customFields.length > 0"
@@ -556,31 +612,40 @@
         />
 
         <!-- Customer Custom Fields -->
-        <div class="grid grid-cols-5 gap-2 mb-8">
-          <h6
-            v-if="customFieldStore.customFields.length > 0"
-            class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
-          >
-            {{ $t('settings.custom_fields.title') }}
-          </h6>
-
-          <div class="col-span-5 lg:col-span-4">
-            <CustomerCustomFields
-              type="Customer"
-              :store="customerStore"
-              store-prop="currentCustomer"
-              :is-edit="isEdit"
-              :is-loading="isLoadingContent"
-              :custom-field-scope="customFieldValidationScope"
-            />
-          </div>
-        </div>
+        <Disclosure v-slot="{ open }">
+          <DisclosureButton
+              class="flex w-full justify-between items-center rounded-lg bg-gray-100 px-4 py-2 text-left text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring focus-visible:ring-gray-500/75"
+            >
+            <h6 v-if="customFieldStore.customFields.length > 0" class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+              {{ $t('settings.custom_fields.title') }}
+            </h6>
+                <div   :class="open ? 'rotate-180 transform' : ''">
+                  <svg height="16px" width="16px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 185.343 185.343" xml:space="preserve" fill="#000000" transform="rotate(90)" stroke="#000000" stroke-width="7.599062999999999"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path style="fill:#010002;" d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175 l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934 c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z"></path> </g> </g> </g></svg>
+                </div>
+            </DisclosureButton>
+              <DisclosurePanel>
+                <div class="grid grid-cols-5 gap-4 px-4 mt-5 mb-8">
+                  <div class="col-span-5 lg:col-span-4">
+                    <CustomerCustomFields
+                      type="Customer"
+                      :store="customerStore"
+                      store-prop="currentCustomer"
+                      :is-edit="isEdit"
+                      :is-loading="isLoadingContent"
+                      :custom-field-scope="customFieldValidationScope"
+                    />
+                  </div>
+                </div>
+              </DisclosurePanel>
+          </Disclosure>
       </BaseCard>
     </form>
   </BasePage>
 </template>
 
 <script setup>
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -633,6 +698,20 @@ const rules = computed(() => {
   return {
     currentCustomer: {
       name: {
+        required: helpers.withMessage(t('validation.required'), required),
+        minLength: helpers.withMessage(
+          t('validation.name_min_length', { count: 3 }),
+          minLength(3)
+        ),
+      },
+      first_name: {
+        required: helpers.withMessage(t('validation.required'), required),
+        minLength: helpers.withMessage(
+          t('validation.name_min_length', { count: 3 }),
+          minLength(3)
+        ),
+      },
+      last_name: {
         required: helpers.withMessage(t('validation.required'), required),
         minLength: helpers.withMessage(
           t('validation.name_min_length', { count: 3 }),
@@ -713,7 +792,10 @@ const rules = computed(() => {
     },
   }
 })
-
+const display_name = computed(()=>{
+  customerStore.currentCustomer.name = customerStore.currentCustomer?.first_name +' ' + customerStore.currentCustomer?.last_name
+  return customerStore.currentCustomer.name;
+})
 const getCustomerPortalUrl = computed(() => {
   return `${window.location.origin}/${companyStore.selectedCompany.slug}/customer/login`
 })
