@@ -10,7 +10,7 @@ class CustomerTemplate implements FromCollection
     public function collection()
     {
         // Define the column headers for the template
-        $headers = ['name', 'email', 'phone'];
+        $headers = ['first_name','last_name', 'email', 'phone','gender'];
 
         // Add custom field headers if needed
         // Assuming you have a collection of custom field slugs in $customFields

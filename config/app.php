@@ -171,6 +171,7 @@ return [
         Crater\Providers\ViewServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Scottlaurent\Accounting\Providers\AccountingServiceProvider::class
     ],
 
     /*

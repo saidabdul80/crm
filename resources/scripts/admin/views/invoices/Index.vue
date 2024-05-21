@@ -256,7 +256,7 @@
 
         <!-- Actions -->
         <template v-if="hasAtleastOneAbility()" #cell-actions="{ row }">
-          <InvoiceDropdown :row="row.data" :table="table" />
+          <InvoiceDropdown @loading="sending" :row="row.data" :table="table" />
         </template>
       </BaseTable>
     </div>
@@ -393,7 +393,9 @@ async function clearStatusSearch(removedOption, id) {
 function refreshTable() {
   table.value && table.value.refresh()
 }
-
+function sending(value){
+  isRequestOngoing.value  = value
+}
 async function fetchData({ page, filter, sort }) {
   let data = {
     customer_id: filters.customer_id,

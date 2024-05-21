@@ -29,6 +29,7 @@
     "league/flysystem-aws-s3-v3": "^1.0",
     "maatwebsite/excel": "^3.1",
     "predis/predis": "^1.1",
+    "scottlaurent/accounting": "^0.3.3",
     "silber/bouncer": "v1.0.0-rc.10",
     "spatie/flysystem-dropbox": "^1.2",
     "spatie/laravel-backup": "^6.11",

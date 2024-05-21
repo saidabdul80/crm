@@ -36,8 +36,8 @@ class SendInvoiceMail extends Mailable
         $log = EmailLog::create([
             'from' => $this->data['from'],
             'to' => $this->data['to'],
-            'subject' => $this->data['subject'],
-            'body' => $this->data['body'],
+            'subject' => 'New Invoice',
+            'body' => 'default',
             'mailable_type' => Invoice::class,
             'mailable_id' => $this->data['invoice']['id'],
         ]);
@@ -47,16 +47,16 @@ class SendInvoiceMail extends Mailable
 
         $this->data['url'] = route('invoice', ['email_log' => $log->token]);
 
-        $mailContent = $this->from($this->data['from'], config('mail.from.name'))
-            ->subject($this->data['subject'])
-            ->markdown('emails.send.invoice', ['data', $this->data]);
+        $mailContent = $this->from('said@paramountstudents.com', config('mail.from.name'))
+            ->subject('New Invoice')
+            ->markdown('app.pdf.invoice.'.$this->data['invoice_template'], $this->data);
 
-        if ($this->data['attach']['data']) {
+    /*     if ($this->data['attach']['data']) {
             $mailContent->attachData(
                 $this->data['attach']['data']->output(),
                 $this->data['invoice']['invoice_number'].'.pdf'
             );
-        }
+        } */
 
         return $mailContent;
     }

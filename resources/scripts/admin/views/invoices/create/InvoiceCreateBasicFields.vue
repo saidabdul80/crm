@@ -53,6 +53,7 @@
         :store="invoiceStore"
         store-prop="newInvoice"
         :v="v"
+        :key="isLoading"
         :is-loading="isLoading"
         :is-edit="isEdit"
         :customer-currency="invoiceStore.newInvoice.currency_id"

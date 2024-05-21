@@ -49,6 +49,7 @@ class PaymentRequest extends FormRequest
             'payment_method_id' => [
                 'nullable',
             ],
+            'fulfilment'=>['in:FULFILLED,NOT FULFILL'],
             'notes' => [
                 'nullable',
             ],

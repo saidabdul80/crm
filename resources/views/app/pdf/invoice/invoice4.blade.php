@@ -7,12 +7,14 @@
 
     <style type="text/css">
         @page{
-            size: 6cm 12cm portrait;
+            size: 300px 27cm portrait;
         }
         /* -- Base -- */
 
         body {
             font-family: "DejaVu Sans";
+            max-width: 300px;
+            padding: 20px;
         }
 
         html {
@@ -153,14 +155,14 @@
 </head>
 
 <body>
-    <div class="header-container" style="font-size:10px">
+    <div class="header-container" >
 
         <img class="header-logo" style="height: 50px;" src="{{ $logo }}" alt="Company Logo">
-        {!! $company_address !!}
     </div>
 
     <hr class="header-bottom-divider">
-        <div class="main-content" style="font-size:10px">
+    <p>Hi </p>
+        <div class="main-content" >
             <div class="customer-address-container">
                 <div class="billing-address-container billing-address">
                     @if ($billing_address)
@@ -200,9 +202,9 @@
 
         <div class="notes" >
             @if ($notes)
-                <div class="notes-label">
+                {{-- <div class="notes-label">
                     @lang('pdf_notes')
-                </div>
+                </div> --}}
 
                 {!! $notes !!}
             @endif

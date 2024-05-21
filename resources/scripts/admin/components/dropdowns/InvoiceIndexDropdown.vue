@@ -150,6 +150,7 @@ const route = useRoute()
 const router = useRouter()
 const utils = inject('utils')
 
+const emit = defineEmits(['loading'])
 function canReSendInvoice(row) {
   return (
     (row.status == 'SENT' || row.status == 'VIEWED') &&
@@ -239,13 +240,25 @@ async function onMarkAsSent(id) {
 }
 
 async function sendInvoice(invoice) {
+
+  emit('loading',true)
+  const response = await invoiceStore.sendInvoice({
+    id: invoice.id,
+    to: invoice.customer.email,
+    body:'-',
+    from:'admin@gmail.com',
+    subject:"New Invoice"
+  })
+
+  emit('loading',false)
+/*
   modalStore.openModal({
     title: t('invoices.send_invoice'),
     componentName: 'SendInvoiceModal',
     id: invoice.id,
     data: invoice,
     variant: 'sm',
-  })
+  }) */
 }
 
 function copyPdfUrl() {

@@ -31,7 +31,7 @@ const invoiceList = ref(null)
 const currentPageNumber = ref(1)
 const lastPageNumber = ref(1)
 const invoiceListSection = ref(null)
-
+const isSending = ref(false)
 const searchData = reactive({
   orderBy: null,
   orderByField: null,
@@ -97,12 +97,27 @@ async function onMarkAsSent() {
 }
 
 async function onSendInvoice(id) {
+
+  isSending.value = true
+  try{
+    const response = await invoiceStore.sendInvoice({
+      id: invoiceData.value.id,
+      to: invoiceData.value.customer.email,
+      body:'-',
+      from:'admin@gmail.com',
+      subject:"New Invoice"
+    })
+  }catch(e){}
+
+  isSending.value = false
+
+  /* emit('loading',false)
   modalStore.openModal({
     title: t('invoices.send_invoice'),
     componentName: 'SendInvoiceModal',
     id: invoiceData.value.id,
     data: invoiceData.value,
-  })
+  }) */
 }
 
 function hasActiveUrl(id) {
@@ -249,6 +264,7 @@ onSearched = debounce(onSearched, 500)
         </div>
 
         <BaseButton
+          :loading="isSending"
           v-if="
             invoiceData.status === 'DRAFT' &&
             userStore.hasAbilities(abilities.SEND_INVOICE)
@@ -258,6 +274,13 @@ onSearched = debounce(onSearched, 500)
           @click="onSendInvoice"
         >
           {{ $t('invoices.send_invoice') }}
+          <template #left="slotProps">
+              <BaseIcon
+                v-if="isSending"
+                name="SaveIcon"
+                :class="slotProps.class"
+              />
+            </template>
         </BaseButton>
 
         <!-- Record Payment  -->

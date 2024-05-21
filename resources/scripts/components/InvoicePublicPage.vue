@@ -65,7 +65,7 @@ I
       >
         Powered by
         <a href="https://cowris.com" target="_blank">
-          <img src="@/scripts/img/cowris-logo-black.png" />
+          <img src="../../scripts/assets/img/cowris-logo-black.png" />
         </a>
       </div>
     </div>

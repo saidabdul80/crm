@@ -18,7 +18,7 @@ class SendInvoiceController extends Controller
     {
         $this->authorize('send invoice', $invoice);
 
-        $invoice->send($request->all());
+        $invoice->send($request);
 
         return response()->json([
             'success' => true,

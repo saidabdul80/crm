@@ -191,8 +191,17 @@
           />
         </template>
 
+        <template #cell-fulfilment="{ row }">
+          <span v-if="row.data.fulfilment =='FULFILLED'" class="text-green-600">
+            {{ row.data.fulfilment }}
+          </span>
+          <span v-else class="text-red-600">
+            {{ row.data.fulfilment }}
+          </span>
+        </template>
+
         <template v-if="hasAtleastOneAbility()" #cell-actions="{ row }">
-          <PaymentDropdown :row="row.data" :table="tableComponent" />
+          <PaymentDropdown :row="row.data" :table="tableComponent" :contentLoading="showEmptyScreen" :refreshTable="refreshTable" />
         </template>
       </BaseTable>
     </div>
@@ -253,6 +262,7 @@ const paymentColumns = computed(() => {
     { key: 'payment_mode', label: t('payments.payment_mode') },
     { key: 'invoice_number', label: t('invoices.invoice_number') },
     { key: 'amount', label: t('payments.amount') },
+    { key: 'fulfilment', label:'Fulfilment'},
     {
       key: 'actions',
       label: '',

@@ -31,6 +31,7 @@ class PaymentMethodRequest extends FormRequest
                 Rule::unique('payment_methods')
                     ->where('company_id', $this->header('company')),
             ],
+            'fulfilment'=>'in:FULFILLED,NOT FULFILL'
         ];
 
         if ($this->getMethod() == 'PUT') {

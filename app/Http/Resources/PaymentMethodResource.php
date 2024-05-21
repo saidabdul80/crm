@@ -19,6 +19,7 @@ class PaymentMethodResource extends JsonResource
             'name' => $this->name,
             'company_id' => $this->company_id,
             'type' => $this->type,
+            'fulfilment'=> $this->fulfilment,
             'company' => $this->when($this->company()->exists(), function () {
                 return new CompanyResource($this->company);
             }),

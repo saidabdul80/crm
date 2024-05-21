@@ -6,6 +6,7 @@ use App;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Crater\Mail\SendInvoiceMail;
+use Crater\Notifications\InvoiceNotification;
 use Crater\Services\SerialNumberFormatter;
 use Crater\Traits\GeneratesPdfTrait;
 use Crater\Traits\HasCustomFieldsTrait;
@@ -328,8 +329,8 @@ class Invoice extends Model implements HasMedia
         }
 
         $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
-        $accountCurrency->balance -= $data['total'];
-        $accountCurrency->save();
+/*         $accountCurrency->balance -= $data['total'];
+        $accountCurrency->save(); */
         $invoice = Invoice::create($data);
 
         $serial = (new SerialNumberFormatter())
@@ -472,11 +473,72 @@ class Invoice extends Model implements HasMedia
         ];
     }
 
+    private function preparedMailData(){
+        $taxes = collect();
+
+        if ($this->tax_per_item === 'YES') {
+            foreach ($this->items as $item) {
+                foreach ($item->taxes as $tax) {
+                    $found = $taxes->filter(function ($item) use ($tax) {
+                        return $item->tax_type_id == $tax->tax_type_id;
+                    })->first();
+
+                    if ($found) {
+                        $found->amount += $tax->amount;
+                    } else {
+                        $taxes->push($tax);
+                    }
+                }
+            }
+        }
+        $invoiceTemplate = self::find($this->id)->template_name;
+
+        $company = Company::find($this->company_id);
+        $locale = CompanySetting::getSetting('language', $company->id);
+        $customFields = CustomField::where('model_type', 'Item')->get();
+
+        App::setLocale($locale);
+
+        $logo = $company->logo_path;
+
+       $maildata = [
+            'invoice_template'=>$invoiceTemplate,
+            'invoice' => $this,
+            'customFields' => $customFields,
+            'company_address' => $this->getCompanyAddress(),
+            'shipping_address' => $this->getCustomerShippingAddress(),
+            'billing_address' => $this->getCustomerBillingAddress(),
+            'notes' => $this->getNotes(),
+            'logo' => $logo ?? null,
+            'taxes' => $taxes,
+            'from'=>env('MAIL_FROM_ADDRESS')
+        ];
+
+        return $maildata;
+    }
+
     public function send($data)
     {
-        $data = $this->sendInvoiceData($data);
 
-        \Mail::to($data['to'])->send(new SendInvoiceMail($data));
+        //$data = $this->sendInvoiceData($data);
+        $mailData = $this->preparedMailData();
+        $mailData['to'] = $data['to'];
+
+      /*   $receivers = [
+            'saidabdulsalam5@gmail.com',
+            'zendmail05@gmail.com'
+        ];
+ */
+        $user = User::find(1);
+        $user->notify(new InvoiceNotification([
+            'invoice_number'=>$mailData['invoice']->invoice_number,
+            'url'=>$mailData['invoice']->invoicePdfUrl,
+            'name'=>$mailData['invoice']->customer->name,
+            'email'=>$mailData['invoice']->customer->email,
+            'phone_number'=>$mailData['invoice']->customer->phone,
+        ]));
+
+        \Mail::to([$mailData['to']])->send(new SendInvoiceMail($mailData));
 
         if ($this->status == Invoice::STATUS_DRAFT) {
             $this->status = Invoice::STATUS_SENT;
@@ -659,11 +721,18 @@ class Invoice extends Model implements HasMedia
 
     public function getExtraFields()
     {
+        $payment_info = CompanySetting::getSetting('invoice_payment_info',$this->company_id);
         return [
             '{INVOICE_DATE}' => $this->formattedInvoiceDate,
             '{INVOICE_DUE_DATE}' => $this->formattedDueDate,
             '{INVOICE_NUMBER}' => $this->invoice_number,
             '{INVOICE_REF_NUMBER}' => $this->reference_number,
+            '{INVOICE_TO_CURRENCY}'=>$this->paying_currency?->code,
+            '{INVOICE_FROM_CURRENCY}'=>$this->currency?->code,
+            '{INVOICE_QUANTITY}'=>$this->quantity,
+            '{INVOICE_RATE}'=>$this->rate,
+            '{INVOICE_AMOUNT}'=>$this->total,
+            '{INVOICE_PAYMENT_INFO}'=>$payment_info
         ];
     }
 

@@ -20,6 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->text('notes')->nullable();
             $table->unsignedBigInteger('amount');
             $table->string('unique_hash')->nullable();
+            $table->enum('fulfilment',['FULFILLED','NOT FULFILL'])->default('NOT FULFILL');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('invoice_id')->unsigned()->nullable();

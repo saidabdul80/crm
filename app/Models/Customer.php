@@ -281,12 +281,12 @@ class Customer extends Authenticatable implements HasMedia
 
     public static function updateCustomer($request, $customer)
     {
-        $condition = $customer->estimates()->exists() || $customer->invoices()->exists() || $customer->payments()->exists() || $customer->recurringInvoices()->exists();
+        /* $condition = $customer->estimates()->exists() || $customer->invoices()->exists() || $customer->payments()->exists() || $customer->recurringInvoices()->exists();
 
         if (($customer->currency_id !== $request->currency_id) && $condition) {
             return 'you_cannot_edit_currency';
         }
-
+ */
         $customer->update($request->getCustomerPayload());
 
         $customer->addresses()->delete();

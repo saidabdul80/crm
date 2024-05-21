@@ -37,6 +37,17 @@
       </BaseDropdownItem>
     </router-link>
 
+    <a v-if="userStore.hasAbilities(abilities.EDIT_PAYMENT)" @click="markAsFulfil"
+      >
+      <BaseDropdownItem>
+        <BaseIcon
+          name="SaveIcon"
+          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        />
+        Mark FULFILLED
+      </BaseDropdownItem>
+    </a>
+
     <!-- view payment  -->
     <router-link
       v-if="
@@ -104,6 +115,7 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  refreshTable: Function,
   contentLoading: {
     type: Boolean,
     default: false,
@@ -152,6 +164,18 @@ function copyPdfUrl() {
     type: 'success',
     message: t('general.copied_pdf_url_clipboard'),
   })
+}
+
+
+async function markAsFulfil(){
+  let data = {
+    ...props.row,
+  }
+  data.fulfilment ='FULFILLED'
+  props.contentLoading = true
+  await paymentStore.updatePayment(data)
+  props.contentLoading = false
+  props.refreshTable()
 }
 
 async function sendPayment(payment) {

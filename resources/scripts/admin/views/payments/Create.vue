@@ -100,7 +100,7 @@
             :help-text="
               selectedInvoice
                 ? `Due Amount: ${
-                    paymentStore.currentPayment.maxPayableAmount / 100
+                    paymentStore.currentPayment.maxPayableAmount
                   }`
                 : ''
             "
@@ -119,14 +119,14 @@
               <template #singlelabel="{ value }">
                 <div class="absolute left-3.5">
                   {{ value.invoice_number }} ({{
-                    utils.formatMoney(value.total, value.customer.currency)
+                    utils.formatMoney(value.total*100, value.customer.currency)
                   }})
                 </div>
               </template>
 
               <template #option="{ option }">
                 {{ option.invoice_number }} ({{
-                  utils.formatMoney(option.total, option.customer.currency)
+                  utils.formatMoney(option.total*100, option.customer.currency)
                 }})
               </template>
             </BaseMultiselect>
@@ -142,6 +142,7 @@
             required
           >
             <div class="relative w-full">
+
               <BaseMoney
                 :key="paymentStore.currentPayment.currency"
                 v-model="amount"
@@ -179,12 +180,28 @@
             </BaseMultiselect>
           </BaseInputGroup>
 
+          <BaseInputGroup
+            :content-loading="isLoadingContent"
+            label="Transaction Fulfulment"
+          >
+            <BaseMultiselect
+              v-model="paymentStore.currentPayment.fulfilment"
+              :content-loading="isLoadingContent"
+              label="Fulfilment"
+              :options="['NOT FULFILL','FULFILLED']"
+              placeholder="Fulfilment"
+              searchable
+            >
+            </BaseMultiselect>
+          </BaseInputGroup>
+
           <ExchangeRateConverter
             :store="paymentStore"
             store-prop="currentPayment"
             :v="v$.currentPayment"
             :is-loading="isLoadingContent"
             :is-edit="isEdit"
+            :isPayment="true"
             :customer-currency="paymentStore.currentPayment.currency_id"
           />
         </BaseInputGrid>
@@ -317,9 +334,9 @@ const PaymentFields = reactive([
 ])
 
 const amount = computed({
-  get: () => paymentStore.currentPayment.amount / 100,
+  get: () => paymentStore.currentPayment.amount,
   set: (value) => {
-    paymentStore.currentPayment.amount = Math.round(value * 100)
+    paymentStore.currentPayment.amount = value
   },
 })
 
@@ -413,9 +430,9 @@ async function onSelectInvoice(id) {
   if (id) {
     selectedInvoice.value = invoiceList.value.find((inv) => inv.id === id)
 
-    amount.value = selectedInvoice.value.due_amount / 100
+    amount.value = selectedInvoice.value.total
     paymentStore.currentPayment.maxPayableAmount =
-      selectedInvoice.value.due_amount
+      selectedInvoice.value.total
   }
 }
 
@@ -461,7 +478,7 @@ function onCustomerChange(customer_id) {
             paymentStore.currentPayment.amount
 
           if (amount.value === 0) {
-            amount.value = selectedInvoice.value.due_amount / 100
+            amount.value = selectedInvoice.value.total
           }
         }
 

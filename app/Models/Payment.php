@@ -115,6 +115,11 @@ class Payment extends Model implements HasMedia
         return $this->belongsTo(Currency::class);
     }
 
+    public function paying_currency()
+    {
+        return $this->belongsTo(Currency::class,'paying_currency_id');
+    }
+
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
