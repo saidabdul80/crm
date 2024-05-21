@@ -170,8 +170,7 @@ return [
         Crater\Providers\DropboxServiceProvider::class,
         Crater\Providers\ViewServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
-        Scottlaurent\Accounting\Providers\AccountingServiceProvider::class
+        Maatwebsite\Excel\ExcelServiceProvider::class
     ],
 
     /*
