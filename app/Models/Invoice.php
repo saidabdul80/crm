@@ -365,8 +365,7 @@ class Invoice extends Model implements HasMedia
             'items.fields.customField',
             'customer',
             'taxes'
-        ])
-            ->find($invoice->id);
+        ])->find($invoice->id);
 
         return $invoice;
     }
@@ -386,9 +385,9 @@ class Invoice extends Model implements HasMedia
             $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
 
             // Calculate the new balance
-            $newBalance = $accountCurrency->balance + $data['total'] - $oldTotal;
+       /*      $newBalance = $accountCurrency->balance + $data['total'] - $oldTotal;
             $accountCurrency->update(['balance' => $newBalance]);
-
+ */
             $total_paid_amount = $this->total - $this->due_amount;
 
         if ($total_paid_amount > 0 && $this->customer_id !== $request->customer_id) {

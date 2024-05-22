@@ -22,13 +22,20 @@ class Company extends Model implements HasMedia
     public const COMPANY_LEVEL = 'company_level';
     public const CUSTOMER_LEVEL = 'customer_level';
 
-    protected $appends = ['logo', 'logo_path'];
+    protected $appends = ['logo', 'logo_path','currency_id'];
 
     public function getRolesAttribute()
     {
         return Role::where('scope', $this->id)
             ->get();
     }
+
+
+    public function getCurrencyIdAttribute()
+    {
+        return CompanySetting::where(['company_id'=>$this->id,'option'=>'currency'])->first()?->value;
+    }
+
 
     public function getLogoPathAttribute()
     {

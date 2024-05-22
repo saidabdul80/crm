@@ -56,10 +56,19 @@ class InvoicesRequest extends FormRequest
             'total' => [
                 'required',
             ],
+            'request_total' => [
+                'required',
+            ],
             'tax' => [
                 'required',
             ],
             'template_name' => [
+                'required'
+            ],
+            'currency_id'=>[
+                'required'
+            ],
+            'paying_currency_id'=>[
                 'required'
             ],
             'items' => [
@@ -112,8 +121,8 @@ class InvoicesRequest extends FormRequest
     {
         $company_currency = CompanySetting::getSetting('currency', $this->header('company'));
         $current_currency = $this->currency_id;
-        $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
-        $currency = Customer::find($this->customer_id)->currency_id;
+    //    $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
+       // $currency = Customer::find($this->customer_id)->currency_id;
 
         return collect($this->except('items', 'taxes'))
             ->merge([
@@ -124,13 +133,14 @@ class InvoicesRequest extends FormRequest
                 'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
                 'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
                 'due_amount' => $this->total,
-                'exchange_rate' => $exchange_rate,
-                'base_total' => $this->total * $exchange_rate,
-                'base_discount_val' => $this->discount_val * $exchange_rate,
-                'base_sub_total' => $this->sub_total * $exchange_rate,
-                'base_tax' => $this->tax * $exchange_rate,
-                'base_due_amount' => $this->total * $exchange_rate,
-                'currency_id' => $currency,
+               /*  'exchange_rate' => $exchange_rate, */
+                'base_total' => $this->total,
+                //'request_total'=>$this->request_total,
+                'base_discount_val' => $this->discount_val,
+                'base_sub_total' => $this->sub_total,
+                'base_tax' => $this->tax,
+                'base_due_amount' => $this->total,
+              //  'currency_id' => $currency,
             ])
             ->toArray();
     }

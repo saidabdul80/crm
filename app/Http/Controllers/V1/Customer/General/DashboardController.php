@@ -19,6 +19,7 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
+
         $user = Auth::guard('customer')->user();
 
         $amountDue = Invoice::whereCustomer($user->id)

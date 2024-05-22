@@ -366,6 +366,7 @@ const updatePrice = function(){
   }else{
     total.value = 0;
   }
+  props.store[props.storeProp].request_total = quantity;
   setTimeout(() => {
     trackWatch.value = false;
   }, 500);
@@ -384,6 +385,7 @@ const updateQ = function(){
   }else{
     total.value = 0;
   }
+  props.store[props.storeProp].request_total = quantity;
   setTimeout(() => {
     trackWatch.value = false;
   }, 500);
@@ -402,6 +404,7 @@ const updateT = function(){
   }else{
     total.value = 0;
   }
+  props.store[props.storeProp].request_total = quantity;
   setTimeout(() => {
     trackWatch.value = false;
   }, 500);

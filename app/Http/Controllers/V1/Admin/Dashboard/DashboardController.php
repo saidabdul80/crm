@@ -27,6 +27,16 @@ class DashboardController extends Controller
         $company = Company::find($request->header('company'));
 
         $this->authorize('view dashboard', $company);
+        $type = $request->type;
+        $column_name = 'currency_id';
+        $amount_column = '';
+        $currency_id = $company->currency_id;
+
+        if(!empty($type)){
+            $amount_column = 'request_';
+            $column_name = 'paying_currency_id';
+            $currency_id = $request->currency_id;
+        }
 
         $invoice_totals = [];
         $expense_totals = [];
@@ -63,10 +73,10 @@ class DashboardController extends Controller
                 $invoice_totals,
                 Invoice::whereBetween(
                     'invoice_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
+                    [$start->format('Y-m-d'), $end->format('Y-m-d')])
+                ->where($column_name,$currency_id)
                 ->whereCompany()
-                ->sum('base_total')
+                ->sum($amount_column.'total') *100
             );
             array_push(
                 $expense_totals,
@@ -75,16 +85,16 @@ class DashboardController extends Controller
                     [$start->format('Y-m-d'), $end->format('Y-m-d')]
                 )
                 ->whereCompany()
-                ->sum('base_amount')
+                ->sum('base_amount') *100
             );
             array_push(
                 $receipt_totals,
                 Payment::whereBetween(
                     'payment_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
+                    [$start->format('Y-m-d'), $end->format('Y-m-d')])
+                ->where($column_name,$currency_id)
                 ->whereCompany()
-                ->sum('amount')
+                ->sum($amount_column.'amount') *100
             );
             array_push(
                 $net_income_totals,
@@ -102,22 +112,21 @@ class DashboardController extends Controller
 
         $total_sales = Invoice::whereBetween(
             'invoice_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
+            [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
+            ->where($column_name,$currency_id)
             ->whereCompany()
-            ->sum('total');
+            ->sum($amount_column.'total');
 
         $total_receipts = Payment::whereBetween(
-            'payment_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
+                'payment_date',
+                [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
+            ->where($column_name,$currency_id)
             ->whereCompany()
-            ->sum('amount');
+            ->sum($amount_column.'amount');
 
         $total_expenses = Expense::whereBetween(
             'expense_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
+            [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
             ->whereCompany()
             ->sum('base_amount');
 
@@ -133,12 +142,15 @@ class DashboardController extends Controller
 
         $total_customer_count = Customer::whereCompany()->count();
         $total_invoice_count = Invoice::whereCompany()
+            ->where($column_name,$currency_id)
             ->count();
         $total_estimate_count = Estimate::whereCompany()->count();
         $total_amount_due = Invoice::whereCompany()
-            ->sum('total');
+            ->where($column_name,$currency_id)
+            ->sum($amount_column.'total');
 
         $recent_due_invoices = Invoice::with('customer')
+            ->where($column_name,$currency_id)
             ->whereCompany()
             ->where('total', '>', 0)
             ->take(5)

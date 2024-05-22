@@ -31,6 +31,7 @@ class InvoiceResource extends JsonResource
             'discount_val' => $this->discount_val,
             'sub_total' => $this->sub_total,
             'total' => $this->total,
+            'request_total' => $this->request_total,
             'tax' => $this->tax,
             'due_amount' => $this->due_amount,
             'sent' => $this->sent,

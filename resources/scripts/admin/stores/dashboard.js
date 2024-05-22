@@ -33,7 +33,7 @@ export const useDashboardStore = (useWindow = false) => {
       totalReceipts: null,
       totalExpenses: null,
       totalNetIncome: null,
-
+      currency_id:null,
       recentDueInvoices: [],
       recentEstimates: [],
 
@@ -41,7 +41,9 @@ export const useDashboardStore = (useWindow = false) => {
     }),
 
     actions: {
-      loadData(params) {
+      loadData(params={}) {
+        params.currency_id = this.currency_id
+
         return new Promise((resolve, reject) => {
           axios
             .get(`/api/v1/dashboard`, { params })

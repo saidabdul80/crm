@@ -25,7 +25,7 @@
       </span>
     </div>
     <div class="flex items-center">
-      <component :is="iconComponent" class="w-10 h-10 xl:w-12 xl:h-12" />
+      <component :is="iconComponent" class="w-10 h-10 xl:w-12 xl:h-12" @change="emitChange" />
     </div>
   </router-link>
 
@@ -39,6 +39,7 @@
 import StatsCardPlaceholder from './DashboardStatsPlaceholder.vue'
 import StatsCardSmPlaceholder from './DashboardStatsSmPlaceholder.vue'
 
+const emit = defineEmits(['change'])
 defineProps({
   iconComponent: {
     type: Object,
@@ -56,9 +57,16 @@ defineProps({
     type: String,
     required: true,
   },
+  switch:{
+    type:Boolean,
+    default: false,
+  },
   large: {
     type: Boolean,
     default: false,
   },
 })
+function emitChange(data){
+  emit('change',data)
+}
 </script>

@@ -135,7 +135,11 @@ export const useGlobalStore = (useWindow = false) => {
               .get('/api/v1/accounts')
               .then((response) => {
                 this.accounts = response.data.filter((currency) => {
-                  return (currency.name = `${currency.code} - ${currency.name} - ${currency?.balance || 0}`)
+                  const cn = currency;
+                  cn.title =currency.name,
+                  cn.name = `${currency.code} - ${currency.name} - ${currency?.balance || 0}`
+                  return cn
+
                 })
                 this.areAccountsLoading = false
                 resolve(response)

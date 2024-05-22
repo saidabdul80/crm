@@ -5,11 +5,12 @@
 
     <DashboardStatsItem
       v-if="userStore.hasAbilities(abilities.VIEW_INVOICE)"
-      :icon-component="DollarIcon"
+      :icon-component="CurrencySwitch"
       :loading="!dashboardStore.isDashboardDataLoaded"
       route="/admin/invoices"
       :large="true"
       :label="$t('dashboard.cards.due_amount')"
+      @change="handleSwitch"
     >
       <BaseFormatMoney
         :amount="dashboardStore.stats.totalAmountDue"
@@ -53,7 +54,7 @@
 </template>
 
 <script setup>
-import DollarIcon from '@/scripts/components/icons/dashboard/DollarIcon.vue'
+import CurrencySwitch from '@/scripts/components/icons/dashboard/CurrencySwitch.vue'
 import CustomerIcon from '@/scripts/components/icons/dashboard/CustomerIcon.vue'
 import InvoiceIcon from '@/scripts/components/icons/dashboard/InvoiceIcon.vue'
 import EstimateIcon from '@/scripts/components/icons/dashboard/EstimateIcon.vue'
@@ -70,4 +71,14 @@ const utils = inject('utils')
 const dashboardStore = useDashboardStore()
 const companyStore = useCompanyStore()
 const userStore = useUserStore()
+
+
+async function handleSwitch(data){
+  companyStore.selectedCompanyCurrency = data;
+  if (userStore.hasAbilities(abilities.DASHBOARD)) {
+
+    await dashboardStore.loadData({})
+  }
+}
+
 </script>

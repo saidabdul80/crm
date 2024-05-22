@@ -4,6 +4,7 @@ namespace Crater\Http\Requests;
 
 use Crater\Models\CompanySetting;
 use Crater\Models\Customer;
+use Crater\Models\Invoice;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -49,6 +50,9 @@ class PaymentRequest extends FormRequest
             'payment_method_id' => [
                 'nullable',
             ],
+            'currency_id' =>[
+                'required'
+            ],
             'fulfilment'=>['in:FULFILLED,NOT FULFILL'],
             'notes' => [
                 'nullable',
@@ -84,15 +88,16 @@ class PaymentRequest extends FormRequest
         $company_currency = CompanySetting::getSetting('currency', $this->header('company'));
         $current_currency = $this->currency_id;
         $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
-        $currency = Customer::find($this->customer_id)->currency_id;
-
+        $invoice = Invoice::find($this->invoice_id);
         return collect($this->validated())
             ->merge([
                 'creator_id' => $this->user()->id,
                 'company_id' => $this->header('company'),
                 'exchange_rate' => $exchange_rate,
-                'base_amount' => $this->amount * $exchange_rate,
-                'currency_id' => $currency
+                'base_amount' => $this->amount,
+                'paying_currency_id'=> $invoice->paying_currency_id,
+                'request_amount'=>$invoice->request_total,
+
             ])
             ->toArray();
     }
