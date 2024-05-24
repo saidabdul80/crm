@@ -41,12 +41,10 @@ export const useDashboardStore = (useWindow = false) => {
     }),
 
     actions: {
-      loadData(params={}) {
+      async loadData(params={}) {
         params.currency_id = this.currency_id
-
-        return new Promise((resolve, reject) => {
-          axios
-            .get(`/api/v1/dashboard`, { params })
+        this.isDashboardDataLoaded =false
+        return axios.get(`/api/v1/dashboard`, { params })
             .then((response) => {
               // Stats
               this.stats.totalAmountDue = response.data.total_amount_due
@@ -79,13 +77,8 @@ export const useDashboardStore = (useWindow = false) => {
 
               this.isDashboardDataLoaded = true
 
-              resolve(response)
+            return response
             })
-            .catch((err) => {
-              handleError(err)
-              reject(err)
-            })
-        })
       },
     },
   })()

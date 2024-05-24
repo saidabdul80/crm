@@ -4,9 +4,13 @@
     >
 
     <div class="flex " >
-      <label class="place-items-center bg-gray-500 rounded-s-md h-[32px] mt-[2px] p-2 w-[20%] text-sm text-white">
-        {{selectedCurrency?.code}} To</label>
       <select v-model="store[storeProp].paying_currency" :class="!isValidCurrency?'border-red-500 focus:border-red-400 shake focus:ring-red-400 ':'border-gray-200'"  @change="updatePayingCurrency" class="font-base w-[80%] sm:text-sm  rounded-md text-black focus:border-gray-400" >
+        <option>Select Currency</option>
+        <option v-for="account in globalStore.accounts" :value="account">{{ account.name }}</option>
+      </select>
+      <label class="place-items-center bg-gray-500 h-[32px] mt-[2px] p-2 w-[20%] text-sm text-white">To</label>
+
+      <select v-model="store[storeProp].currency" :class="!isValidCurrency?'border-red-500 focus:border-red-400 shake focus:ring-red-400 ':'border-gray-200'"  @change="updateRequestCurrency" class="font-base w-[80%] sm:text-sm  rounded-md text-black focus:border-gray-400" >
         <option>Select Currency</option>
         <option v-for="account in globalStore.accounts" :value="account">{{ account.name }}</option>
       </select>
@@ -203,7 +207,7 @@ function flipCurrency(flip = false){
 function updatePayingCurrency(){
   flipCurrency()
 
-  if(props.store[props.storeProp].paying_currency?.id === selectedCurrency.value?.id){
+  if(props.store[props.storeProp].currency?.id === props.store[props.storeProp].paying_currency?.id){
     isValidCurrency.value = false
     props.store[props.storeProp].paying_currency = null
   }else{
@@ -212,6 +216,17 @@ function updatePayingCurrency(){
   }
 }
 
+function updateRequestCurrency(){
+  flipCurrency()
+
+  if(props.store[props.storeProp].currency?.id === props.store[props.storeProp].paying_currency?.id){
+    isValidCurrency.value = false
+    props.store[props.storeProp].currency = null
+  }else{
+    isValidCurrency.value=true
+    props.store[props.storeProp].currency_id = props.store[props.storeProp].currency?.id
+  }
+}
 function checkForActiveProvider() {
   if (isCurrencyDiffrent.value) {
     exchangeRateStore

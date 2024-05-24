@@ -30,14 +30,19 @@ class DashboardController extends Controller
         $type = $request->type;
         $column_name = 'currency_id';
         $amount_column = '';
-        $currency_id = $company->currency_id;
-
-        if(!empty($type)){
+        //$currency_id = $company->currency_id;
+        $currency_id = $request->currency_id;
+/*
+        if($type == 'income'){
             $amount_column = 'request_';
             $column_name = 'paying_currency_id';
             $currency_id = $request->currency_id;
+        }else if($type== 'sales'){
+            $column_name = 'currency_id';
+            $amount_column = '';
+            $currency_id = $request->currency_id;
         }
-
+ */
         $invoice_totals = [];
         $expense_totals = [];
         $receipt_totals = [];
@@ -74,9 +79,9 @@ class DashboardController extends Controller
                 Invoice::whereBetween(
                     'invoice_date',
                     [$start->format('Y-m-d'), $end->format('Y-m-d')])
-                ->where($column_name,$currency_id)
+                ->where('currency_id',$currency_id)
                 ->whereCompany()
-                ->sum($amount_column.'total') *100
+                ->sum('request_total') *100
             );
             array_push(
                 $expense_totals,
@@ -92,13 +97,18 @@ class DashboardController extends Controller
                 Payment::whereBetween(
                     'payment_date',
                     [$start->format('Y-m-d'), $end->format('Y-m-d')])
-                ->where($column_name,$currency_id)
+                ->where('paying_currency_id',$currency_id)
                 ->whereCompany()
-                ->sum($amount_column.'amount') *100
+                ->sum('amount') * 100
             );
             array_push(
                 $net_income_totals,
-                ($receipt_totals[$i] - $expense_totals[$i])
+                Invoice::whereBetween(
+                    'invoice_date',
+                    [$start->format('Y-m-d'), $end->format('Y-m-d')])
+                ->where('paying_currency_id',$currency_id)
+                ->whereCompany()
+                ->sum('total') *100
             );
             $i++;
             array_push($months, $start->format('M'));
@@ -113,16 +123,16 @@ class DashboardController extends Controller
         $total_sales = Invoice::whereBetween(
             'invoice_date',
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
-            ->where($column_name,$currency_id)
+            ->where('currency_id',$currency_id)
             ->whereCompany()
-            ->sum($amount_column.'total');
+            ->sum('request_total');
 
         $total_receipts = Payment::whereBetween(
                 'payment_date',
                 [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
-            ->where($column_name,$currency_id)
+            ->where('paying_currency_id',$currency_id)
             ->whereCompany()
-            ->sum($amount_column.'amount');
+            ->sum('amount');
 
         $total_expenses = Expense::whereBetween(
             'expense_date',
@@ -130,8 +140,12 @@ class DashboardController extends Controller
             ->whereCompany()
             ->sum('base_amount');
 
-        $total_net_income = (int)$total_receipts - (int)$total_expenses;
-
+        $total_net_income = Invoice::whereBetween(
+            'invoice_date',
+            [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
+            ->where('paying_currency_id',$currency_id)
+            ->whereCompany()
+            ->sum('total');
         $chart_data = [
             'months' => $months,
             'invoice_totals' => $invoice_totals,
@@ -145,12 +159,12 @@ class DashboardController extends Controller
             ->where($column_name,$currency_id)
             ->count();
         $total_estimate_count = Estimate::whereCompany()->count();
-        $total_amount_due = Invoice::whereCompany()
-            ->where($column_name,$currency_id)
-            ->sum($amount_column.'total');
+        $total_amount_due = Invoice::where('paying_currency_id',$currency_id)
+            ->whereCompany()
+            ->sum('total');
 
         $recent_due_invoices = Invoice::with('customer')
-            ->where($column_name,$currency_id)
+            ->where('paying_currency_id',$currency_id)
             ->whereCompany()
             ->where('total', '>', 0)
             ->take(5)

@@ -1,16 +1,16 @@
 <template>
-   <div  >
-      <label @click.prevent="open=true" class="flex bg-red-200 h-full cursor-pointer rounded-full items-center justify-center text-red-600" >{{selectedCurrency?.symbol}}</label>
-      <Transition name="fade">
-        <div v-if="open" class="'border-gray-300 z-[8]  bg-white top-[80px] right-[-40px]  absolute font-base w-[180px] shadow  rounded-md text-black" >
-          <div class="hover:bg-gray-300 p-2 flex justify-between" @click.prevent="handleChange(account)" v-for="account in globalStore.accounts" :value="account">
-            {{ account.title }}
-            <span class="w-8 text-center">
-              {{ account.symbol }}
-            </span>
-          </div>
+  <div  >
+    <label @click.prevent="open=true" class="flex bg-red-200 h-full cursor-pointer rounded-full items-center justify-center text-red-600" >{{companyStore.selectedCompanyCurrency.symbol}}</label>
+    <Transition name="fade">
+      <div v-if="open" class="'border-gray-300 z-[8]  bg-white top-[80px] right-[-40px]  absolute font-base w-[180px] shadow  rounded-md text-black" >
+        <div class="hover:bg-gray-300 p-2 flex justify-between" @click.prevent="handleChange(account)" v-for="account in globalStore.accounts" :value="account">
+          {{ account.title }}
+          <span class="w-8 text-center">
+            {{ account.symbol }}
+          </span>
         </div>
-      </Transition>
+      </div>
+    </Transition>
       </div>
 </template>
 
@@ -39,7 +39,6 @@ async function init(){
   if(res?.data){
     selectedCurrency.value = globalStore.accounts.find((item)=> item.id == res?.data.currency)
     dashboardStore.currency_id = parseInt(res?.data.currency)
-    emit('change', globalStore.accounts[0])
   }
 }
 init()

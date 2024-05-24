@@ -38,7 +38,7 @@
             </td>
             <td class="px-5 py-4 text-right align-top flex items-center">
               <div class="bg=">
-                {{ store[storeProp]?.paying_currency?.symbol }}
+                {{ store[storeProp]?.currency?.symbol }}
               </div>
               <BaseInput
                 v-model="quantity"
@@ -57,12 +57,6 @@
                 <div class="flex-auto flex-fill bd-highlight">
                   <div class="relative w-full">
 
-                  <!--   <BaseMoney
-                      :currency="selectedCurrency"
-                      :key="selectedCurrency"
-                      :value="store[storeProp]?.exchange_rate"
-                      disabled
-                    /> -->
                     {{ price }}
                   </div>
                 </div>
@@ -126,7 +120,7 @@
                     <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
                   </BaseContentPlaceholders>
                   <div class="flex items-center">
-                    {{ selectedCurrency?.symbol }}
+                    {{ props.store[props.storeProp].paying_currency?.symbol }}
                     <BaseInput
                     v-model="total"
                     :invalid="v$.discount_val.$error"
@@ -313,13 +307,6 @@ const discount = computed({
   return (total.value + subtotal.value) - props.itemData.discount_val
 })
  */
-const selectedCurrency = computed(() => {
-  if (props.currency) {
-    return props.currency
-  } else {
-    return companyStore.selectedCompanyCurrency
-  }
-})
 
 const showRemoveButton = computed(() => {
   if (props.store[props.storeProp].items.length == 1) {
@@ -359,9 +346,9 @@ const updatePrice = function(){
     price.value = rate;
     if(props.store[props.storeProp]?.fliped){
 
-      total.value = (quantity.value * rate).toFixed(2) - props.itemData.discount_val;
-    }else{
       total.value = (quantity.value / rate).toFixed(2) - props.itemData.discount_val;
+    }else{
+      total.value = (quantity.value * rate).toFixed(2) - props.itemData.discount_val;
     }
   }else{
     total.value = 0;
@@ -378,9 +365,9 @@ const updateQ = function(){
     price.value = rate;
     if(props.store[props.storeProp]?.fliped){
 
-      total.value = (quantity.value / rate).toFixed(2) - props.itemData.discount_val;
-    }else{
       total.value = (quantity.value * rate).toFixed(2) - props.itemData.discount_val;
+    }else{
+      total.value = (quantity.value / rate).toFixed(2) - props.itemData.discount_val;
     }
   }else{
     total.value = 0;
@@ -397,9 +384,9 @@ const updateT = function(){
     price.value = rate;
     if(props.store[props.storeProp]?.fliped){
 
-      quantity.value = (total.value / rate).toFixed(2);
-    }else{
       quantity.value = (total.value * rate).toFixed(2);
+    }else{
+      quantity.value = (total.value / rate).toFixed(2);
     }
   }else{
     total.value = 0;

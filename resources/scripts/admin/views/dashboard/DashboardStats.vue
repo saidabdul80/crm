@@ -17,7 +17,6 @@
         :currency="companyStore.selectedCompanyCurrency"
       />
     </DashboardStatsItem>
-
     <!-- Customers -->
     <DashboardStatsItem
       v-if="userStore.hasAbilities(abilities.VIEW_CUSTOMER)"
@@ -74,9 +73,10 @@ const userStore = useUserStore()
 
 
 async function handleSwitch(data){
+  console.log(data,344444)
   companyStore.selectedCompanyCurrency = data;
   if (userStore.hasAbilities(abilities.DASHBOARD)) {
-
+   // dashboardStore.isDashboardDataLoaded = false
     await dashboardStore.loadData({})
   }
 }
