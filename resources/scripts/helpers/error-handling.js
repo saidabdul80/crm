@@ -26,6 +26,7 @@ export const handleError = (err) => {
 
       authStore.logout()
     } else if (err.response.data.errors) {
+
       // Show a notification per error
       const errors = JSON.parse(JSON.stringify(err.response.data.errors))
       for (const i in errors) {
@@ -64,7 +65,7 @@ export const showError = (error) => {
     case 'payments_attached':
       showToaster('settings.payment_modes.payments_attached')
       break
-    
+
     case 'expenses_attached':
       showToaster('settings.payment_modes.expenses_attached')
       break

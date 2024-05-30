@@ -1,5 +1,6 @@
 <?php
 
+use Crater\Http\Controllers\CentralController;
 use Crater\Http\Controllers\AppVersionController;
 use Crater\Http\Controllers\V1\Admin\Auth\ForgotPasswordController;
 use Crater\Http\Controllers\V1\Admin\Auth\LoginController as AuthLoginController;
@@ -552,3 +553,4 @@ Route::prefix('/v1')->group(function () {
 
 Route::get('/cron', CronJobController::class)->middleware('cron-job');
 Route::get('/request_access', [AuthLoginController::class,'requestAccess']);
+Route::post('/transactions', [CentralController::class,'transactionHook']);
