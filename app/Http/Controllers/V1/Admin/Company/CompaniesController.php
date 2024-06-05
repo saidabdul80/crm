@@ -8,6 +8,7 @@ use Crater\Http\Resources\CompanyResource;
 use Crater\Models\Company;
 use Crater\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Silber\Bouncer\BouncerFacade;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -15,24 +16,34 @@ class CompaniesController extends Controller
 {
     public function store(CompaniesRequest $request)
     {
-        $this->authorize('create company');
+        \DB::beginTransaction();
+        try {
+            $this->authorize('create', Company::class);
+            
+            $user = $request->user();
 
-        $user = $request->user();
+            $company = Company::create($request->validated());
+            $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
+            $company->save();
+            $company->setupDefaultData();
+            $user->companies()->attach($company->id);
+            $user->assign('super admin');
+            
+            if ($request->filled('address')) {
+                $company->address()->create($request->input('address'));
+            }
 
-        $company = Company::create($request->getCompanyPayload());
-        $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
-        $company->save();
-        $company->setupDefaultData();
-        $user->companies()->attach($company->id);
-        $user->assign('super admin');
+            $response = Http::post(env('SAVE_COMPANY_WEBHOOK'), $company->toArray());
 
-        if ($request->address) {
-            $company->address()->create($request->address);
+            \DB::commit();
+
+            return new CompanyResource($company);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            // Log the error or handle it as needed
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        return new CompanyResource($company);
     }
-
     public function destroy(Request $request)
     {
         $company = Company::find($request->header('company'));
