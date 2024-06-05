@@ -48,6 +48,24 @@
             />
           </BaseInputGroup>
 
+          
+          <BaseInputGroup
+            label="email"
+            :error="
+              v$.newCompanyForm.name.$error &&
+              v$.newCompanyForm.name.$errors[0].$message
+            "
+            :content-loading="isFetchingInitialData"
+            required
+          >
+            <BaseInput
+              v-model="newCompanyForm.email"
+              :invalid="v$.newCompanyForm.email.$error"
+              :content-loading="isFetchingInitialData"
+              @input="v$.newCompanyForm.email.$touch()"
+            />
+          </BaseInputGroup>
+
           <BaseInputGroup
             :content-loading="isFetchingInitialData"
             :label="$t('settings.company_info.country')"
@@ -132,7 +150,7 @@
 import { useModalStore } from '@/scripts/stores/modal'
 import { computed, onMounted, ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { required, minLength, helpers } from '@vuelidate/validators'
+import { required, minLength, helpers, email } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
@@ -152,6 +170,7 @@ let companyLogoName = ref(null)
 
 const newCompanyForm = reactive({
   name: null,
+  email:null,
   currency: '',
   address: {
     country_id: null,
@@ -169,6 +188,13 @@ const rules = {
       minLength: helpers.withMessage(
         t('validation.name_min_length', { count: 3 }),
         minLength(3)
+      ),
+    },
+    email:{
+      required:helpers.withMessage('Company email is required',required),
+      minLength: helpers.withMessage(
+        t('validation.name_min_length', { count: 6 }),
+        minLength(6)
       ),
     },
     address: {

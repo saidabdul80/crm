@@ -34,6 +34,9 @@ class CompaniesRequest extends FormRequest
             'currency' => [
                 'required'
             ],
+            'email' => [
+                'required',
+            ],
             'address.name' => [
                 'nullable',
             ],

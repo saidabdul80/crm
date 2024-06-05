@@ -23,7 +23,6 @@ class CompaniesController extends Controller
             $user = $request->user();
 
             $company = Company::create($request->validated());
-            $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
             $company->save();
             $company->setupDefaultData();
             $user->companies()->attach($company->id);
@@ -33,7 +32,7 @@ class CompaniesController extends Controller
                 $company->address()->create($request->input('address'));
             }
 
-            $response = Http::post(env('SAVE_COMPANY_WEBHOOK'), $company->toArray());
+            $response = Http::post(env('SAVE_COMPANY_WEBHOOK'),(array) (new CompanyResource($company)));
 
             \DB::commit();
 
