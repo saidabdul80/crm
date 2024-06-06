@@ -47,10 +47,16 @@ class CompanyController extends Controller
     public function updateCompany(CompanyRequest $request)
     {
         $company = Company::find($request->header('company'));
-
-        $this->authorize('manage company', $company);
-
-        $company->update($request->getCompanyPayload());
+        $payload = $request->getCompanyPayload();
+        if(empty($company->owner_id)){
+            if(isset($payload['commission_percentage'])){
+                unset($payload['commission_percentage']);
+                unset($payload['api_key']);
+                unset($payload['roles']);
+            }
+        }
+       // $this->authorize('manage company', $company);
+        $company->update($payload);
 
         $company->address()->updateOrCreate(['company_id' => $company->id], $request->address);
 

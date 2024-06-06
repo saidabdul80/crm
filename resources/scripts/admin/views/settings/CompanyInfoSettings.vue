@@ -28,6 +28,28 @@
           />
         </BaseInputGroup>
 
+        <BaseInputGroup
+          label="API KEY">
+          <BaseInput
+            :disabled="true"
+            :value="companyStore.selectedCompany.api_key"
+          />
+        </BaseInputGroup>            
+        
+        <BaseInputGroup label="Commission Percentage">
+          <BaseInput 
+          :disabled="companyStore.selectedCompany.owner_id == '' || companyStore.selectedCompany.owner_id == null"
+          v-model="companyForm.commission_percentage" />
+        </BaseInputGroup>
+
+        <BaseInputGroup label="Api URL">
+          <BaseInput v-model="companyForm.api_url" />
+        </BaseInputGroup>
+
+        <BaseInputGroup label="Webhook URL">
+          <BaseInput v-model="companyForm.webhook_url" />
+        </BaseInputGroup>
+
         <BaseInputGroup :label="$t('settings.company_info.phone')">
           <BaseInput v-model="companyForm.address.phone" />
         </BaseInputGroup>
@@ -161,6 +183,9 @@ let isSaving = ref(false)
 const companyForm = reactive({
   name: null,
   logo: null,
+  webhook_url:null,
+  api_url:null,
+  commission_percentage:null,
   address: {
     address_street_1: '',
     address_street_2: '',

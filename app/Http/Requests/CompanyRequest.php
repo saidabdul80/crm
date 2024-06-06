@@ -58,7 +58,11 @@ class CompanyRequest extends FormRequest
         return collect($this->validated())
             ->only([
                 'name',
-                'slug'
+                'slug',
+                'commission_percentage',
+                'email',
+                'api_url',
+                'webhook_url',
             ])
             ->toArray();
     }

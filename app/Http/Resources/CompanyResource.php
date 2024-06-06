@@ -24,7 +24,7 @@ class CompanyResource extends JsonResource
             'owner_id' => $this->owner_id,
             'commission_percentage'=> $this->commission_percentage,
             'api_url'=> $this->api_url,
-            'api_key'=> $this->api_url,
+            'api_key'=> $this->api_key,
             'webhook_url'=> $this->webhook_url,
             'country'=> $this->country,
             'slug' => $this->slug,
