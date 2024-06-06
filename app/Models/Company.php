@@ -9,6 +9,8 @@ use Silber\Bouncer\Database\Role;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+use Illuminate\Support\Str;
+
 class Company extends Model implements HasMedia
 {
     use InteractsWithMedia;
@@ -18,6 +20,20 @@ class Company extends Model implements HasMedia
     protected $guarded = [
         'id'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = (string) Str::uuid();
+            }
+            if (empty($model->api_key)) {
+                $model->api_key = Str::random(32);
+            }
+        });
+    }
 
     public const COMPANY_LEVEL = 'company_level';
     public const CUSTOMER_LEVEL = 'customer_level';

@@ -6,6 +6,7 @@ use Crater\Http\Controllers\Controller;
 use Crater\Http\Requests\CompaniesRequest;
 use Crater\Http\Resources\CompanyResource;
 use Crater\Models\Company;
+use Crater\Models\PgClient;
 use Crater\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -24,6 +25,7 @@ class CompaniesController extends Controller
 
             $company = Company::create($request->validated());
             $company->save();
+            
             $company->setupDefaultData();
             $user->companies()->attach($company->id);
             $user->assign('super admin');
@@ -32,14 +34,23 @@ class CompaniesController extends Controller
                 $company->address()->create($request->input('address'));
             }
 
-            $response = Http::post(env('SAVE_COMPANY_WEBHOOK'),(array) (new CompanyResource($company)));
-
+            $companyData = [
+                'company_name' => $company->name,
+                'commission_percentage' => $company->commission_percentage,
+                'api_url' => $company->api_url,
+                'webhook_url' => $company->webhook_url,
+                'api_key' => $company->api_key,
+                'id'=>$company->uuid,
+                'company_logo'=>$company->logo,
+            ];
+            
+            $pgClient = PgClient::create($companyData);
+    
             \DB::commit();
 
             return new CompanyResource($company);
         } catch (\Exception $e) {
-            \DB::rollBack();
-            // Log the error or handle it as needed
+            \DB::rollBack();            
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

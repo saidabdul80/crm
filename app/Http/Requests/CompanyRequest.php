@@ -32,6 +32,21 @@ class CompanyRequest extends FormRequest
             'slug' => [
                 'nullable'
             ],
+            'email'=>[
+                'nullable'
+            ],
+            'commission_percentage'=>[
+                'nullable'
+            ],
+            'api_url'=>[
+                'nullable'
+            ],
+            'webhook_url'=>[
+                'nullable'
+            ],
+            'country'=>[
+                'nullable'
+            ],
             'address.country_id' => [
                 'required',
             ],

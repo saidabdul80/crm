@@ -50,7 +50,7 @@
 
           
           <BaseInputGroup
-            label="email"
+            label="Email"
             :error="
               v$.newCompanyForm.name.$error &&
               v$.newCompanyForm.name.$errors[0].$message
@@ -66,6 +66,37 @@
             />
           </BaseInputGroup>
 
+                    
+          <BaseInputGroup
+            label="Commission Percentage"
+            :content-loading="isFetchingInitialData"
+            required
+          >
+            <BaseInput
+              v-model="newCompanyForm.commission_percentage"
+              :content-loading="isFetchingInitialData"
+            />
+          </BaseInputGroup>                    
+             <BaseInputGroup
+            label="Api URL"    
+            :content-loading="isFetchingInitialData"
+            required
+          >
+            <BaseInput
+              v-model="newCompanyForm.api_url"
+              :content-loading="isFetchingInitialData"
+            />
+          </BaseInputGroup>                                                 
+             <BaseInputGroup
+            label="Webhook URL"      
+            :content-loading="isFetchingInitialData"
+            required
+          >
+            <BaseInput
+              v-model="newCompanyForm.webhook_url"
+              :content-loading="isFetchingInitialData"
+            />
+          </BaseInputGroup>                                
           <BaseInputGroup
             :content-loading="isFetchingInitialData"
             :label="$t('settings.company_info.country')"
