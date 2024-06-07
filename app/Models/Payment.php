@@ -11,6 +11,7 @@ use Crater\Traits\GeneratesPdfTrait;
 use Crater\Traits\HasCustomFieldsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -139,19 +140,26 @@ class Payment extends Model implements HasMedia
  
     public function send($data)
     {
-        $data = $this->sendPaymentData($data);
-        $company = Company::find($data["customer"]["company"]["id"])->first();         
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $company->api_key,
-        ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
-            'currency_symbol' => $data['currency']['code'],
-            'full_name' => $data['selectedCustomer']['name'],
-            'email' => $data['selectedCustomer']['email'],
-            'amount' => $data['amount'],
-            'security_question' => 'What Country do you live in?',
-            'security_answer' => 'Cowris',
-            'description' => 'Monthly upkeep',
-        ]);
+        try{
+            DB::beginTransaction();
+            $data = $this->sendPaymentData($data);
+                $company = Company::find($data["customer"]["company"]["id"])->first();         
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $company->api_key,
+                    ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
+                'currency_symbol' => $data['currency']['code'],
+                'full_name' => $data['selectedCustomer']['name'],
+                'email' => $data['selectedCustomer']['email'],
+                'amount' => $data['amount'],
+                'security_question' => 'What Country do you live in?',
+                'security_answer' => 'Cowris',
+                'description' => 'Monthly upkeep',
+            ]);
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json($e, 400);
+        }
         \Mail::to($data['to'])->send(new SendPaymentMail($data));
 
         return [
