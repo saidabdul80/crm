@@ -146,29 +146,9 @@ class Payment extends Model implements HasMedia
             // Process the data
             $data = $this->sendPaymentData($data);
 
-            // Find the company
-            $company = Company::find($data["customer"]["company"]["id"]);
+           
 
-            if (!$company) {
-                throw new \Exception('Company not found');
-            }
-
-            // Send the HTTP request
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $company->api_key,
-            ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
-                'currency_symbol' => $data['currency']['code'],
-                'full_name' => $data['selectedCustomer']['name'],
-                'email' => $data['selectedCustomer']['email'],
-                'amount' => $data['amount'],
-                'security_question' => 'What Country do you live in?',
-                'security_answer' => 'Cowris',
-                'description' => 'Monthly upkeep',
-            ]);
-
-            if ($response->failed()) {
-                throw new \Exception('Failed to send the payment data');
-            }
+        
 
             DB::commit();
         } catch (\Exception $e) {
@@ -225,7 +205,30 @@ class Payment extends Model implements HasMedia
             'paymentMethod',
             'fields'
         ])->find($payment->id);
+        
+         // Find the company
+         $company = Company::find($$request->customer["company"]["id"]);
 
+         if (!$company) {
+             throw new \Exception('Company not found');
+         }
+
+        // Send the HTTP request
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $company->api_key,
+        ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
+            'currency_symbol' => $$request->currency['code'],
+            'full_name' => $$request->selectedCustomer['name'],
+            'email' => $request->selectedCustomer['email'],
+            'amount' => $request->amount,
+            'security_question' => 'What Country do you live in?',
+            'security_answer' => 'Cowris',
+            'description' => 'Monthly upkeep',
+        ]);
+
+        if ($response->failed()) {
+            throw new \Exception('Failed to send the payment data');
+        }
         return $payment;
     }
 

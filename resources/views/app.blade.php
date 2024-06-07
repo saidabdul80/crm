@@ -65,7 +65,7 @@
         window.copyright_text = "{{$copyright_text}}"
 
         @endif
-
+        
         window.Crater.start()
     </script>
 </body>
