@@ -207,7 +207,7 @@ class Payment extends Model implements HasMedia
         ])->find($payment->id);
         
          // Find the company
-         $company = Company::find($$request->customer["company"]["id"]);
+         $company = Company::find($request->customer["company"]["id"]);
 
          if (!$company) {
              throw new \Exception('Company not found');
@@ -216,9 +216,9 @@ class Payment extends Model implements HasMedia
         // Send the HTTP request
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $company->api_key,
-        ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
-            'currency_symbol' => $$request->currency['code'],
-            'full_name' => $$request->selectedCustomer['name'],
+        ])->post('https://optimum-fun-bobcat.ngrok-free.app/api/transaction/apaylo-send', [
+            'currency_symbol' => $request->currency['code'],
+            'full_name' => $request->selectedCustomer['name'],
             'email' => $request->selectedCustomer['email'],
             'amount' => $request->amount,
             'security_question' => 'What Country do you live in?',
