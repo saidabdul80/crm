@@ -216,7 +216,7 @@ class Payment extends Model implements HasMedia
         // Send the HTTP request
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $company->api_key,
-        ])->post('https://optimum-fun-bobcat.ngrok-free.app/api/transaction/apaylo-send', [
+        ])->post(env('SAVE_COMPANY_WEBHOOK').'/api/transaction/apaylo-send', [
             'currency_symbol' => $request->currency['code'],
             'full_name' => $request->selectedCustomer['name'],
             'email' => $request->selectedCustomer['email'],
