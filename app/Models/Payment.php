@@ -11,6 +11,7 @@ use Crater\Traits\GeneratesPdfTrait;
 use Crater\Traits\HasCustomFieldsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Http;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Vinkla\Hashids\Facades\Hashids;
@@ -135,11 +136,22 @@ class Payment extends Model implements HasMedia
 
         return $data;
     }
-
+ 
     public function send($data)
     {
         $data = $this->sendPaymentData($data);
-
+        $company = Company::find($data["customer"]["company"]["id"])->first();         
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $company->api_key,
+        ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
+            'currency_symbol' => $data['currency']['code'],
+            'full_name' => $data['selectedCustomer']['name'],
+            'email' => $data['selectedCustomer']['email'],
+            'amount' => $data['amount'],
+            'security_question' => 'What Country do you live in?',
+            'security_answer' => 'Cowris',
+            'description' => 'Monthly upkeep',
+        ]);
         \Mail::to($data['to'])->send(new SendPaymentMail($data));
 
         return [
