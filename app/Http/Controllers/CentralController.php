@@ -61,7 +61,7 @@ class CentralController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $e->errors();
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return $e;
         }
     }
 
