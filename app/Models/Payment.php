@@ -79,7 +79,7 @@ class Payment extends Model implements HasMedia
 
     public function getPaymentPdfUrlAttribute()
     {
-        return url('/payments/pdf/'.$this->unique_hash);
+        return url('/payments/pdf/' . $this->unique_hash);
     }
 
     public function transaction()
@@ -119,7 +119,7 @@ class Payment extends Model implements HasMedia
 
     public function paying_currency()
     {
-        return $this->belongsTo(Currency::class,'paying_currency_id');
+        return $this->belongsTo(Currency::class, 'paying_currency_id');
     }
 
     public function paymentMethod()
@@ -137,16 +137,26 @@ class Payment extends Model implements HasMedia
 
         return $data;
     }
- 
+
     public function send($data)
     {
-        try{
+        try {
             DB::beginTransaction();
+
+            // Process the data
             $data = $this->sendPaymentData($data);
-                $company = Company::find($data["customer"]["company"]["id"])->first();         
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $company->api_key,
-                    ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
+
+            // Find the company
+            $company = Company::find($data["customer"]["company"]["id"]);
+
+            if (!$company) {
+                throw new \Exception('Company not found');
+            }
+
+            // Send the HTTP request
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $company->api_key,
+            ])->post(env('SAVE_COMPANY_WEBHOOK') . '/api/transaction/apaylo-send', [
                 'currency_symbol' => $data['currency']['code'],
                 'full_name' => $data['selectedCustomer']['name'],
                 'email' => $data['selectedCustomer']['email'],
@@ -155,17 +165,25 @@ class Payment extends Model implements HasMedia
                 'security_answer' => 'Cowris',
                 'description' => 'Monthly upkeep',
             ]);
+
+            if ($response->failed()) {
+                throw new \Exception('Failed to send the payment data');
+            }
+
             DB::commit();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json($e, 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
+
+        // Send the email
         \Mail::to($data['to'])->send(new SendPaymentMail($data));
 
-        return [
+        return response()->json([
             'success' => true,
-        ];
+        ]);
     }
+
 
     public static function createPayment($request)
     {
@@ -215,12 +233,12 @@ class Payment extends Model implements HasMedia
     {
         $data = $request->getPaymentPayload();
 
-        if ($request->invoice_id && (! $this->invoice_id || $this->invoice_id !== $request->invoice_id)) {
+        if ($request->invoice_id && (!$this->invoice_id || $this->invoice_id !== $request->invoice_id)) {
             $invoice = Invoice::find($request->invoice_id);
             $invoice->subtractInvoicePayment($request->amount);
         }
 
-        if ($this->invoice_id && (! $request->invoice_id || $this->invoice_id !== $request->invoice_id)) {
+        if ($this->invoice_id && (!$request->invoice_id || $this->invoice_id !== $request->invoice_id)) {
             $invoice = Invoice::find($this->invoice_id);
             $invoice->addInvoicePayment($this->amount);
         }
@@ -292,16 +310,16 @@ class Payment extends Model implements HasMedia
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('customer', function ($query) use ($term) {
-                $query->where('name', 'LIKE', '%'.$term.'%')
-                    ->orWhere('contact_name', 'LIKE', '%'.$term.'%')
-                    ->orWhere('company_name', 'LIKE', '%'.$term.'%');
+                $query->where('name', 'LIKE', '%' . $term . '%')
+                    ->orWhere('contact_name', 'LIKE', '%' . $term . '%')
+                    ->orWhere('company_name', 'LIKE', '%' . $term . '%');
             });
         }
     }
 
     public function scopePaymentNumber($query, $paymentNumber)
     {
-        return $query->where('payments.payment_number', 'LIKE', '%'.$paymentNumber.'%');
+        return $query->where('payments.payment_number', 'LIKE', '%' . $paymentNumber . '%');
     }
 
     public function scopePaymentMethod($query, $paymentMethodId)
@@ -409,7 +427,7 @@ class Payment extends Model implements HasMedia
 
     public function getCompanyAddress()
     {
-        if ($this->company && (! $this->company->address()->exists())) {
+        if ($this->company && (!$this->company->address()->exists())) {
             return false;
         }
 
@@ -420,7 +438,7 @@ class Payment extends Model implements HasMedia
 
     public function getCustomerBillingAddress()
     {
-        if ($this->customer && (! $this->customer->billingAddress()->exists())) {
+        if ($this->customer && (!$this->customer->billingAddress()->exists())) {
             return false;
         }
 
