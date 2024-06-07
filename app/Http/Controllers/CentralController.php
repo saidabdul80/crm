@@ -18,13 +18,12 @@ class CentralController extends Controller
     {
         try {
 
-            $request->validate([
-                "client_id" => "required",
+            $request->validate([       
                 "from_currency" => "required",
-                "to_currency" => "required",
+              //  "to_currency" => "required",
                 "amount" => "required",
-                "fulfilment_amount" => "required",
-                "rate" => "required",
+                //"fulfilment_amount" => "required",
+                //"rate" => "required",
                 "status" => "required",
                 "description" => "required",
                 "transaction_ref" => "required",
@@ -32,15 +31,14 @@ class CentralController extends Controller
                 "updated_at" => "required",
             ]);
             
-            $company_id = Company::where('unique_hash', $request->client_id)->first()?->id;
-            if (empty($company_id)) {
-            }
+            $company_id = Company::where('uuid', $request->client_id)->first()?->id;
+                    
             $paying_currency_id = Currency::where('code', $request->to_currency)->first()?->id;
             $currency_id = Currency::where('code', $request->from_currency)->first()?->id;
-            $status = "NOT FULFILLED";
-            if ($request->statu == "paid") {
+      /*       $status = "NOT FULFILLED";
+            if ($request->statu == "completed") {
                 $status = "FULFILLED";
-            }
+            } */
 
             $transaction = [
                 "payment_number" => $request->transaction_ref,
@@ -51,10 +49,11 @@ class CentralController extends Controller
                 "company_id" => $company_id,
                 "creator_id" => NULL,
                 "exchange_rate" => $request->rate,
+                "details"=>$request->customer_details,
                 "base_amount" => $request->amount,
                 "currency_id" => $currency_id,
                 "paying_currency_id" => $paying_currency_id,
-                "fulfilment" => $status,
+                "fulfilment" => $request->status,
             ];
 
             Payment::insert($transaction);
