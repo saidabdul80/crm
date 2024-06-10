@@ -168,7 +168,7 @@ class Payment extends Model implements HasMedia
     public static function createPayment($request)
     {
         $data = $request->getPaymentPayload();
-
+        DB::beginTransaction();
         if ($request->invoice_id) {
             $invoice = Invoice::find($request->invoice_id);
             $invoice->subtractInvoicePayment($request->amount);
@@ -212,11 +212,11 @@ class Payment extends Model implements HasMedia
          if (!$company) {
              throw new \Exception('Company not found');
          }
-
+         
         // Send the HTTP request
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $company->api_key,
-        ])->post('https://optimum-fun-bobcat.ngrok-free.app/api/transaction/apaylo-send', [
+        ])->post(env('SAVE_COMPANY_WEBHOOK').'/api/transaction/apaylo-send', [
             'currency_symbol' => $request->currency['code'],
             'full_name' => $request->selectedCustomer['name'],
             'email' => $request->selectedCustomer['email'],
@@ -227,8 +227,10 @@ class Payment extends Model implements HasMedia
         ]);
 
         if ($response->failed()) {
+            DB::rollBack();
             throw new \Exception('Failed to send the payment data');
         }
+        DB::commit();
         return $payment;
     }
 
