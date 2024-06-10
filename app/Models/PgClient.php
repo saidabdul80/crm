@@ -14,7 +14,7 @@ class PgClient extends Model
     protected $table = 'clients'; // Ensure this matches the table name in your pgsql database
 
     protected $fillable = [
-        'company_name', 'email','uuid', 'commission_percentage', 'api_url','api_key','webhook_url','country','company_logo'
+        'company_name', 'email','id', 'commission_percentage', 'api_url','api_key','webhook_url','country','company_logo'
     ];
 
     protected $keyType = 'string'; // Indicate that the primary key is a string
