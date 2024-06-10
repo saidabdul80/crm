@@ -1,10 +1,10 @@
 <template>
     <BaseInputGroup v-if="!isPayment"
-    label="Currency Request"
+    label="Currency Exchange"
     >
 
     <div class="flex " >
-      <select v-model="store[storeProp].paying_currency" :class="!isValidCurrency?'border-red-500 focus:border-red-400 shake focus:ring-red-400 ':'border-gray-200'"  @change="updatePayingCurrency" class="font-base w-[80%] sm:text-sm  rounded-md text-black focus:border-gray-400" >
+      <select v-model="store[storeProp].from_currency" :class="!isValidCurrency?'border-red-500 focus:border-red-400 shake focus:ring-red-400 ':'border-gray-200'"  @change="updatePayingCurrency" class="font-base w-[80%] sm:text-sm  rounded-md text-black focus:border-gray-400" >
         <option>Select Currency</option>
         <option v-for="account in globalStore.accounts" :value="account">{{ account.name }}</option>
       </select>
@@ -144,7 +144,7 @@ const selectedCurrency = computed(() => {
 
 const currencyStack = ref({
   first:selectedCurrency2.value?.code,
-  second: props.store[props.storeProp].paying_currency?.code
+  second: props.store[props.storeProp].from_currency?.code
 })
 const isCurrencyDiffrent = computed(() => {
   return companyCurrency.value.id !== props.customerCurrency
@@ -178,11 +178,11 @@ watch(
 watch(
   () => globalStore.areAccountsLoading,
   (v) => {
-    const currency_id = props.store[props.storeProp].paying_currency_id;
+    const currency_id = props.store[props.storeProp].from_currency_id;
     if(currency_id){
       globalStore.accounts.forEach((item)=>{
           if(item.currency_id == currency_id ){
-            props.store[props.storeProp].paying_currency = item;
+            props.store[props.storeProp].from_currency = item;
           }
       })
     }
@@ -196,30 +196,30 @@ function flipCurrency(flip = false){
     props.store[props.storeProp].fliped = !props.store[props.storeProp].fliped
   }
   if(props.store[props.storeProp].fliped){
-    currencyStack.value.first = props.store[props.storeProp].paying_currency?.code
+    currencyStack.value.first = props.store[props.storeProp].from_currency?.code
     currencyStack.value.second= selectedCurrency2.value?.code
   }else{
     currencyStack.value.first = selectedCurrency.value?.code
-    currencyStack.value.second= props.store[props.storeProp].paying_currency?.code
+    currencyStack.value.second= props.store[props.storeProp].from_currency?.code
   }
 }
 
 function updatePayingCurrency(){
   flipCurrency()
 
-  if(props.store[props.storeProp].currency?.id === props.store[props.storeProp].paying_currency?.id){
+  if(props.store[props.storeProp].currency?.id === props.store[props.storeProp].from_currency?.id){
     isValidCurrency.value = false
-    props.store[props.storeProp].paying_currency = null
+    props.store[props.storeProp].from_currency = null
   }else{
     isValidCurrency.value=true
-    props.store[props.storeProp].paying_currency_id = props.store[props.storeProp].paying_currency?.id
+    props.store[props.storeProp].from_currency_id = props.store[props.storeProp].from_currency?.id
   }
 }
 
 function updateRequestCurrency(){
   flipCurrency()
 
-  if(props.store[props.storeProp].currency?.id === props.store[props.storeProp].paying_currency?.id){
+  if(props.store[props.storeProp].currency?.id === props.store[props.storeProp].from_currency?.id){
     isValidCurrency.value = false
     props.store[props.storeProp].currency = null
   }else{

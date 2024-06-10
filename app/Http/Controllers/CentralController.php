@@ -20,7 +20,7 @@ class CentralController extends Controller
 
             $request->validate([       
                 "from_currency" => "required",
-              //  "to_currency" => "required",
+              //  "from_currency" => "required",
                 "amount" => "required",
                 //"fulfilment_amount" => "required",
                 //"rate" => "required",
@@ -33,8 +33,8 @@ class CentralController extends Controller
             
             $company_id = Company::where('uuid', $request->client_id)->first()?->id;
                     
-            $paying_currency_id = Currency::where('code', $request->to_currency)->first()?->id;
-            $currency_id = Currency::where('code', $request->from_currency)->first()?->id;
+            $from_currency_id = Currency::where('code', $request->from_currency)->first()?->id;
+            $currency_id = Currency::where('code', $request->to_currency)->first()?->id;
       /*       $status = "NOT FULFILLED";
             if ($request->statu == "completed") {
                 $status = "FULFILLED";
@@ -52,7 +52,7 @@ class CentralController extends Controller
                 "details"=>$request->customer_details,
                 "base_amount" => $request->amount,
                 "currency_id" => $currency_id,
-                "paying_currency_id" => $paying_currency_id,
+                "from_currency_id" => $from_currency_id,
                 "fulfilment" => $request->status,
             ];
 
@@ -79,7 +79,7 @@ class CentralController extends Controller
             'paid_status' => 'required|string',
             'total' => 'required|integer',
             "from_currency" => "required",
-            "to_currency" => "required",
+            "from_currency" => "required",
             'discount_val' => 'required|integer',
             'exchange_rate' => 'required|float',
             'items_name' => 'required|string',
@@ -98,8 +98,8 @@ class CentralController extends Controller
             }
 
             $customer = Customer::first(['id' => $validatedData['customer_id']]);
-            $paying_currency_id = Currency::where('code', $request->to_currency)->first()?->id;
-            $currency_id = Currency::where('code', $request->from_currency)->first()?->id;
+            $from_currency_id = Currency::where('code', $request->from_currency)->first()?->id;
+            $currency_id = Currency::where('code', $request->to_currency)->first()?->id;
             // Prepare invoice data
             $invoiceData = [
                 'invoice_date' => $validatedData['invoice_date'],
@@ -113,7 +113,7 @@ class CentralController extends Controller
                 'company_id' => $company->id,
                 'customer_id' => $customer?->id,
                 "currency_id" => $currency_id,
-                "paying_currency_id" => $paying_currency_id,
+                "from_currency_id" => $from_currency_id,
             ];
             
             // Create invoice

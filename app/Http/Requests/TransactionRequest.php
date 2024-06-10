@@ -26,7 +26,7 @@ class TransactionRequest extends FormRequest
         return [
             "client_id"=>["required"],
             "from_currency"=>["required"],
-            "to_currency"=>["required"],
+            "from_currency"=>["required"],
             "amount"=>["required"],
             "fulfilment_amount"=>["required"],
             "rate"=>["required"],

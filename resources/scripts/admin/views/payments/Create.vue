@@ -119,14 +119,14 @@
               <template #singlelabel="{ value }">
                 <div class="absolute left-3.5">
                   {{ value.invoice_number }} ({{
-                    utils.formatMoney(value.total*100, value.customer.currency)
+                    utils.formatMoney(value.total*100, value.from_currency)
                   }})
                 </div>
               </template>
 
               <template #option="{ option }">
                 {{ option.invoice_number }} ({{
-                  utils.formatMoney(option.total*100, option.customer.currency)
+                  utils.formatMoney(option.total*100, option.from_currency)
                 }})
               </template>
             </BaseMultiselect>
@@ -429,10 +429,10 @@ async function setInvoiceFromUrl() {
 async function onSelectInvoice(id) {
   if (id) {
     selectedInvoice.value = invoiceList.value.find((inv) => inv.id === id)
-
-    amount.value = selectedInvoice.value.total
+    paymentStore.currentPayment.request_amount =  selectedInvoice.value
+    amount.value = selectedInvoice.value.items.reduce((sum, item) => sum + item.quantity, 0);
     paymentStore.currentPayment.maxPayableAmount =
-      selectedInvoice.value.total
+      selectedInvoice.value.items.reduce((sum, item) => sum + item.quantity, 0);
   }
 }
 

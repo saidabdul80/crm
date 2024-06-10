@@ -35,7 +35,7 @@ class DashboardController extends Controller
 /*
         if($type == 'income'){
             $amount_column = 'request_';
-            $column_name = 'paying_currency_id';
+            $column_name = 'from_currency_id';
             $currency_id = $request->currency_id;
         }else if($type== 'sales'){
             $column_name = 'currency_id';
@@ -97,7 +97,7 @@ class DashboardController extends Controller
                 Payment::whereBetween(
                     'payment_date',
                     [$start->format('Y-m-d'), $end->format('Y-m-d')])
-                ->where('paying_currency_id',$currency_id)
+                ->where('from_currency_id',$currency_id)
                 ->whereCompany()
                 ->sum('amount') * 100
             );
@@ -106,7 +106,7 @@ class DashboardController extends Controller
                 Invoice::whereBetween(
                     'invoice_date',
                     [$start->format('Y-m-d'), $end->format('Y-m-d')])
-                ->where('paying_currency_id',$currency_id)
+                ->where('from_currency_id',$currency_id)
                 ->whereCompany()
                 ->sum('total') *100
             );
@@ -130,7 +130,7 @@ class DashboardController extends Controller
         $total_receipts = Payment::whereBetween(
                 'payment_date',
                 [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
-            ->where('paying_currency_id',$currency_id)
+            ->where('from_currency_id',$currency_id)
             ->whereCompany()
             ->sum('amount');
 
@@ -143,7 +143,7 @@ class DashboardController extends Controller
         $total_net_income = Invoice::whereBetween(
             'invoice_date',
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')])
-            ->where('paying_currency_id',$currency_id)
+            ->where('from_currency_id',$currency_id)
             ->whereCompany()
             ->sum('total');
         $chart_data = [
@@ -159,12 +159,12 @@ class DashboardController extends Controller
             ->where($column_name,$currency_id)
             ->count();
         $total_estimate_count = Estimate::whereCompany()->count();
-        $total_amount_due = Invoice::where('paying_currency_id',$currency_id)
+        $total_amount_due = Invoice::where('from_currency_id',$currency_id)
             ->whereCompany()
             ->sum('total');
 
         $recent_due_invoices = Invoice::with('customer')
-            ->where('paying_currency_id',$currency_id)
+            ->where('from_currency_id',$currency_id)
             ->whereCompany()
             ->where('total', '>', 0)
             ->take(5)

@@ -120,7 +120,7 @@
                     <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
                   </BaseContentPlaceholders>
                   <div class="flex items-center">
-                    {{ props.store[props.storeProp].paying_currency?.symbol }}
+                    {{ props.store[props.storeProp].from_currency?.symbol }}
                     <BaseInput
                     v-model="total"
                     :invalid="v$.discount_val.$error"

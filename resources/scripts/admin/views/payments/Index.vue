@@ -184,10 +184,16 @@
           </span>
         </template>
 
-        <template #cell-amount="{ row }">
+        <template #cell-amount="{ row }">          
           <BaseFormatMoney
             :amount="row.data.amount"
-            :currency="row.data.customer.currency"
+            :currency="row.data.currency"
+          />
+        </template>
+        <template #cell-from_amount="{ row }">                    
+          <BaseFormatMoney
+            :amount="row.data.request_amount"
+            :currency="row.data.from_currency"
           />
         </template>
 
@@ -262,6 +268,7 @@ const paymentColumns = computed(() => {
     { key: 'payment_mode', label: t('payments.payment_mode') },
     { key: 'invoice_number', label: t('invoices.invoice_number') },
     { key: 'amount', label: t('payments.amount') },
+    { key: 'from_amount', label: t('payments.from_amount') },
     { key: 'fulfilment', label:'Fulfilment'},
     {
       key: 'actions',

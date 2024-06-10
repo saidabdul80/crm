@@ -68,7 +68,7 @@ class InvoicesRequest extends FormRequest
             'currency_id'=>[
                 'required'
             ],
-            'paying_currency_id'=>[
+            'from_currency_id'=>[
                 'required'
             ],
             'items' => [

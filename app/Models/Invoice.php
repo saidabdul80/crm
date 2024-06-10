@@ -93,9 +93,9 @@ class Invoice extends Model implements HasMedia
         return $this->belongsTo(Currency::class);
     }
 
-    public function paying_currency()
+    public function from_currency()
     {
-        return $this->belongsTo(Currency::class,'paying_currency_id');
+        return $this->belongsTo(Currency::class,'from_currency_id');
     }
 
     public function company()
@@ -328,7 +328,7 @@ class Invoice extends Model implements HasMedia
             $data['status'] = Invoice::STATUS_SENT;
         }
 
-        $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
+        $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['from_currency_id'])->first();
 /*         $accountCurrency->balance -= $data['total'];
         $accountCurrency->save(); */
         $invoice = Invoice::create($data);
@@ -382,7 +382,7 @@ class Invoice extends Model implements HasMedia
             $oldTotal = $this->total;
             $data = $request->getInvoicePayload();
 
-            $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['paying_currency_id'])->first();
+            $accountCurrency = CompanyAccount::whereCompany()->where('currency_id',$data['from_currency_id'])->first();
 
             // Calculate the new balance
        /*      $newBalance = $accountCurrency->balance + $data['total'] - $oldTotal;
@@ -726,7 +726,7 @@ class Invoice extends Model implements HasMedia
             '{INVOICE_DUE_DATE}' => $this->formattedDueDate,
             '{INVOICE_NUMBER}' => $this->invoice_number,
             '{INVOICE_REF_NUMBER}' => $this->reference_number,
-            '{INVOICE_TO_CURRENCY}'=>$this->paying_currency?->code,
+            '{INVOICE_from_currency}'=>$this->from_currency?->code,
             '{INVOICE_FROM_CURRENCY}'=>$this->currency?->code,
             '{INVOICE_QUANTITY}'=>$this->quantity,
             '{INVOICE_RATE}'=>$this->rate,

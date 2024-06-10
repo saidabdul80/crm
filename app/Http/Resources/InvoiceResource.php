@@ -24,7 +24,7 @@ class InvoiceResource extends JsonResource
             'paid_status' => $this->paid_status,
             'tax_per_item' => $this->tax_per_item,
             'discount_per_item' => $this->discount_per_item,
-            'paying_currency_id'=>$this->paying_currency_id,
+            'from_currency_id'=>$this->from_currency_id,
             'notes' => $this->notes,
             'discount_type' => $this->discount_type,
             'discount' => $this->discount,
@@ -77,6 +77,9 @@ class InvoiceResource extends JsonResource
             }),
             'currency' => $this->when($this->currency()->exists(), function () {
                 return new CurrencyResource($this->currency);
+            }),
+            'from_currency' => $this->when($this->from_currency()->exists(), function () {
+                return new CurrencyResource($this->from_currency);
             }),
         ];
     }

@@ -216,14 +216,28 @@
 
         <!-- Invoice Total  -->
         <template #cell-total="{ row }">
+          
           <BaseFormatMoney
             :amount="row.data.total"
-            :currency="row.data.customer.currency"
+            :currency="row.data.from_currency"
           />
+          
+          <BasePaidStatusBadge
+              :status="row.data.paid_status"
+              class="px-1 py-0.5 ml-2"
+            >
+              {{ row.data.paid_status }}
+            </BasePaidStatusBadge>
         </template>
 
         <!-- Invoice status  -->
-        <template #cell-status="{ row }">
+        <template #cell-to_amount="{ row }">          
+          <span class="px-3">
+            <BaseFormatMoney
+            :amount="row.data.items.reduce((sum, item) => sum + item.quantity, 0)"
+            :currency="row.data.currency"
+            />
+          </span>
           <BaseInvoiceStatusBadge :status="row.data.status" class="px-3 py-1">
             {{ row.data.status }}
           </BaseInvoiceStatusBadge>
@@ -232,11 +246,11 @@
         <!-- Due Amount + Paid Status  -->
         <template #cell-due_amount="{ row }">
           <div class="flex justify-between">
-            <BaseFormatMoney
-              :amount="row.data.due_amount"
-              :currency="row.data.currency"
-            />
-
+          <!--    <BaseFormatMoney
+                :amount="row.data.due_amount"
+                :currency="row.data.currency"
+              />
+            -->
             <BasePaidStatusBadge
               v-if="row.data.overdue"
               status="OVERDUE"
@@ -245,12 +259,6 @@
               {{ $t('invoices.overdue') }}
             </BasePaidStatusBadge>
 
-            <BasePaidStatusBadge
-              :status="row.data.paid_status"
-              class="px-1 py-0.5 ml-2"
-            >
-              {{ row.data.paid_status }}
-            </BasePaidStatusBadge>
           </div>
         </template>
 
@@ -341,16 +349,12 @@ const invoiceColumns = computed(() => {
     },
     { key: 'invoice_number', label: t('invoices.number') },
     { key: 'name', label: t('invoices.customer') },
-    { key: 'status', label: t('invoices.status') },
-    {
-      key: 'due_amount',
-      label: t('dashboard.recent_invoices_card.amount_due'),
-    },
     {
       key: 'total',
       label: t('invoices.total'),
       tdClass: 'font-medium text-gray-900',
     },
+    { key: 'to_amount', label: t('invoices.to_total') }, 
 
     {
       key: 'actions',

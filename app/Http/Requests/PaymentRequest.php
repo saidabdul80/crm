@@ -95,8 +95,8 @@ class PaymentRequest extends FormRequest
                 'company_id' => $this->header('company'),
                 'exchange_rate' => $exchange_rate,
                 'base_amount' => $this->amount,
-                'paying_currency_id'=> $invoice->paying_currency_id,
-                'request_amount'=>$invoice->request_total,
+                'from_currency_id'=> $invoice->from_currency_id,
+                'request_amount'=>$invoice->total,
 
             ])
             ->toArray();

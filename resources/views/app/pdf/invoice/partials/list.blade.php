@@ -1,5 +1,5 @@
 <?php
-$invoice->load('paying_currency');
+$invoice->load('from_currency');
 $invoice->load('currency');
 ?>
 <style>
@@ -30,7 +30,7 @@ $invoice->load('currency');
                 @endforeach
                 <div class="clear-f">
                     <span class="text-left">toCurrency:</span>
-                    <span class="text-right">{{ $invoice->paying_currency?->code }}</span>
+                    <span class="text-right">{{ $invoice->from_currency?->code }}</span>
                 </div>
                 <div class="clear-f">
                     <span class="text-left">fromCurrency:</span>

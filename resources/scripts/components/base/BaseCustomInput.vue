@@ -183,7 +183,7 @@ async function getFields() {
           { label: 'Due Date', value: 'INVOICE_DUE_DATE' },
           { label: 'Number', value: 'INVOICE_NUMBER' },
           { label: 'Reference', value: 'INVOICE_REF_NUMBER' },
-          { label: 'To Currency', value: 'INVOICE_TO_CURRENCY' },
+          { label: 'To Currency', value: 'INVOICE_from_currency' },
           { label: 'From Currency', value: 'INVOICE_FROM_CURRENCY' },
           { label: 'Quantity', value: 'INVOICE_QUANTITY' },
           { label: 'Rate', value: 'INVOICE_RATE' },
