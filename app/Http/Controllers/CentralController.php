@@ -41,7 +41,8 @@ class CentralController extends Controller
             } */
 
             $transaction = [
-                "payment_number" => $request->transaction_ref,
+                "payment_number" => $request->payment_number,
+                "transaction_ref" => $request->transaction_ref,
                 "payment_date" => $request->created_at??date('Y-m-d'),
                 "notes" => $request->description,
                 "amount" => $request->amount,

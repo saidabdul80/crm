@@ -1,37 +1,23 @@
-name: CI
+image: atlassian/default-image:latest
 
-on: [push, pull_request]
-
-jobs:
-  build-test:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ['7.4', '8.0']
-
-    name: PHP ${{ matrix.php }}
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Install dependencies
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        extensions: exif
-
-    - name: Install PHP 7 dependencies
-      run: composer update --no-interaction --no-progress
-      if: "matrix.php < 8"
-
-    - name: Install PHP 8 dependencies
-      run: composer update --ignore-platform-req=php --no-interaction --no-progress
-      if: "matrix.php >= 8"
-
-    - name: Check coding style
-      run: ./vendor/bin/php-cs-fixer fix -v --dry-run --using-cache=no --config=.php-cs-fixer.dist.php
-
-    - name: Unit Tests
-      run: php ./vendor/bin/pest
+pipelines:
+  branches:
+    main:
+      - step:
+          caches:
+            - pip
+          env:
+            PASSPHRASE_FILE: ~/.ssh/passphrase.txt
+          script:
+            - apt-get update
+            - apt-get install -y openssh-client
+            - apt-get install -y php-cli php-mbstring unzip
+            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+            - mkdir -p ~/.ssh
+            - echo "$DEPLOY_KEY" | base64 --decode > ~/.ssh/id_rsa
+            - echo "${{ secrets.SSH_PASSPHRASE }}" > $PASSPHRASE_FILE
+            - chmod 600 ~/.ssh/id_rsa
+            - chmod 600 $PASSPHRASE_FILE
+            - ssh-keyscan -H 34.252.126.11 >> ~/.ssh/known_hosts
+            - cat ~/.ssh/id_rsa  # Debugging step to check if the private key is correctly written
+            - ssh-agent bash -c 'ssh-add ~/.ssh/id_rsa < $PASSPHRASE_FILE && ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mf4vad6qmw1k@198.12.235.72 "cd /path/to/your/project && git pull origin master && composer update --ignore-platform-req=php --no-interaction --no-progress && php artisan optimize:clear"' || { echo "Deployment failed"; exit 1; }
