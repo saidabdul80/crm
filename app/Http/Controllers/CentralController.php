@@ -40,6 +40,8 @@ class CentralController extends Controller
                 $status = "FULFILLED";
             } */
 
+            
+
             $transaction = [
                 "payment_number" => $request->payment_number,
                 "transaction_ref" => $request->transaction_ref,
@@ -57,7 +59,13 @@ class CentralController extends Controller
                 "fulfilment" => $request->status,
             ];
 
-            Payment::insert($transaction);
+            $payment = Payment::where("payment_number",$request->payment_number)->orWhere("transaction_ref",$request->transaction_ref)->first();
+            if(empty($payment)){
+                Payment::insert($transaction);
+            }else{
+                $payment->status = $request->status;
+                $payment->save();
+            }
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $e->errors();
