@@ -1,23 +1,26 @@
-image: atlassian/default-image:latest
+name: Deploy to Production
 
-pipelines:
-  branches:
-    main:
-      - step:
-          caches:
-            - pip
-          env:
-            PASSPHRASE_FILE: ~/.ssh/passphrase.txt
-          script:
-            - apt-get update
-            - apt-get install -y openssh-client
-            - apt-get install -y php-cli php-mbstring unzip
-            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-            - mkdir -p ~/.ssh
-            - echo "$DEPLOY_KEY" | base64 --decode > ~/.ssh/id_rsa
-            - echo "${{ secrets.SSH_PASSPHRASE }}" > $PASSPHRASE_FILE
-            - chmod 600 ~/.ssh/id_rsa
-            - chmod 600 $PASSPHRASE_FILE
-            - ssh-keyscan -H 34.252.126.11 >> ~/.ssh/known_hosts
-            - cat ~/.ssh/id_rsa  # Debugging step to check if the private key is correctly written
-            - ssh-agent bash -c 'ssh-add ~/.ssh/id_rsa < $PASSPHRASE_FILE && ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mf4vad6qmw1k@198.12.235.72 "cd /path/to/your/project && git pull origin master && composer update --ignore-platform-req=php --no-interaction --no-progress && php artisan optimize:clear"' || { echo "Deployment failed"; exit 1; }
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" | base64 -d > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 34.252.126.11 >> ~/.ssh/known_hosts
+
+      - name: Install dependencies and deploy
+        run: |
+          ssh-agent bash -c 'ssh-add ~/.ssh/id_rsa && ssh -o StrictHostKeyChecking=no mf4vad6qmw1k@198.12.235.72 "cd /path/to/your/project && git pull origin master && composer update --ignore-platform-req=php --no-interaction --no-progress && php artisan optimize:clear"'
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
