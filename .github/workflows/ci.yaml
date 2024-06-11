@@ -15,12 +15,16 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" | base64 -d > ~/.ssh/id_rsa
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PASSPHRASE }}" > ~/.ssh/passphrase.txt
           chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/passphrase.txt
           ssh-keyscan -H 34.252.126.11 >> ~/.ssh/known_hosts
 
       - name: Install dependencies and deploy
         run: |
           ssh-agent bash -c 'ssh-add ~/.ssh/id_rsa && ssh -o StrictHostKeyChecking=no mf4vad6qmw1k@198.12.235.72 "cd ~/public_html/clients.cowris.com && git pull origin master && composer update --ignore-platform-req=php --no-interaction --no-progress && php artisan optimize:clear"'
         env:
-          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          SSH_AGENT_PID: $SSH_AGENT_PID
+          SSH_PASSPHRASE_FILE: ~/.ssh/passphrase.txt
