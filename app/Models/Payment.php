@@ -221,6 +221,7 @@ class Payment extends Model implements HasMedia
             'full_name' => $request->selectedCustomer['name'],
             'email' => $request->selectedCustomer['email'],
             'amount' => $request->amount,
+            'payment_number' => $request->payment_number,
             'security_question' => 'What Country do you live in?',
             'security_answer' => 'Cowris',
             'description' => 'Monthly upkeep',

@@ -57,6 +57,7 @@ class CentralController extends Controller
                 "currency_id" => $currency_id,
                 "from_currency_id" => $from_currency_id,
                 "fulfilment" => $request->status,
+                "type"=>"receive"
             ];
 
             $payment = Payment::where("payment_number",$request->payment_number)->orWhere("transaction_ref",$request->transaction_ref)->first();
@@ -66,7 +67,7 @@ class CentralController extends Controller
                 $payment->status = $request->status;
                 $payment->save();
             }
-            
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $e->errors();
         } catch (\Exception $e) {
