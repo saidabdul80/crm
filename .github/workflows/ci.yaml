@@ -22,4 +22,4 @@ jobs:
 
       - name: Install dependencies and deploy
         run: |
-          sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa mf4vad6qmw1k@198.12.235.72 "cd ~/public_html/clients.cowris.com && git pull origin master && composer update --ignore-platform-req=php --no-interaction --no-progress && php artisan optimize:clear"
+          sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -vvv mf4vad6qmw1k@198.12.235.72 "cd ~/public_html/clients.cowris.com && git pull origin master && php artisan optimize:clear"
