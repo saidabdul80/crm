@@ -60,13 +60,19 @@ class CentralController extends Controller
                 "type"=>"receive"
             ];
 
-            $payment = Payment::where("payment_number",$request->payment_number)->orWhere("transaction_ref",$request->transaction_ref)->first();
-            if(empty($payment)){
-                Payment::insert($transaction);
-            }else{
-                $payment->status = $request->status;
-                $payment->save();
+            $payment = Payment::where('payment_number', $request->payment_number)
+            ->whereNotNull('payment_number')
+            ->first();
+        
+            if ($payment === null) {
+                Payment::create($transaction);
+            } else {
+                $payment->update([
+                    'status' => $request->status,
+                    'transaction_ref' => $request->transaction_ref,
+                ]);
             }
+        
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $e->errors();
